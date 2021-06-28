@@ -5,7 +5,7 @@ My work dealed with the tool SQuIRE. You may find here informations on the way w
 
 
 
-                         These informations are in disorder, I shall edit this file regularly.
+..............................................These informations are in disorder, I shall edit this file regularly...............................................
 
 
 
