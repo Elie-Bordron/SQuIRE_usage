@@ -375,4 +375,4 @@ it did not start, was still pending. I just executed it with the 124 samples.
 @@@@@@@@@@@@@@@@ 05/07 @@@@@@@@@@@@@@@@
 I must note that I modified Map.py on the 121st line to add fields that are present in our modified file in the STAR command (called in map.py)
 
-I copied all the scripts existing at 15:35 in the x folder to the /gpfs/home/ebordron/tmp_ebordron/run_squire/Marouch_scripts_copy folder. old scripts are in a sister directory called "old".
+I copied all the scripts existing at 15:35 in the x folder to the /gpfs/home/ebordron/tmp_ebordron/run_squire/Marouch_scripts_copy folder. old scripts are in /gpfs/home/ebordron/tmp_ebordron/run_squire/old .
