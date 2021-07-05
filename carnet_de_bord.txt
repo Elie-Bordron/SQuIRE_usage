@@ -1,0 +1,378 @@
+Le 22/06/2021
+je lance le script:
+/scratch/qtbui_TE/analysis/squire/download_human_genome/run_fetch.sh
+ce qui lance squire Fetch avec pour seule instruction optionnelle le téléchargement du fichier repeatmasker:
+squire Fetch -b hg38 -r -v
+et avec les options SLURM suivantes:
+#SBATCH -- job-name="dl_hg38"
+#SBATCH -o /scratch/qtbui_TE/analysis/squire/download_human_genome/sqFETCH_hg38.out
+#SBATCH -e /scratch/qtbui_TE/analysis/squire/download_human_genome/sqFETCH_hg38.error
+#SBATCH -t 1-02:00:00
+#SBATCH --mem=40GB
+#SBATCH --nodes=1
+#SBATCH --mail-type=END:
+#SBATCH --mail-user=ebordron@etu.u-bordeaux.fr
+#SBATCH --export=ALL
+#SBATCH -M email.com@email.com
+
+
+résultat (les 10 premières lignes du fichier /scratch/qtbui_TE/analysis/squire/download_human_genome/squire_fetch/hg38_rmsk.txt):
+585	463	13	6	17	chr1	10000	10468	-248945954	+	(TAACCC)n	Simple_repeat	Simple_repeat	1	471	0	1
+585	3612	114	215	13	chr1	10468	11447	-248944975	-	TAR1	Satellite	telo	-399	1712	483	2
+585	484	251	132	0	chr1	11504	11675	-248944747	-	L1MC5a	LINE	L1	-2382	395	199	3
+585	239	294	19	10	chr1	11677	11780	-248944642	-	MER5B	DNA	hAT-Charlie	-74	104	1	4
+585	318	230	37	0	chr1	15264	15355	-248941067	-	MIR3	SINE	MIR	-119	143	49	5
+585	18	232	0	19	chr1	15797	15849	-248940573	+	(TGCTCC)n	Simple_repeat	Simple_repeat	1	52	0	6
+585	18	137	0	0	chr1	16712	16744	-248939678	+	(TGG)n	Simple_repeat	Simple_repeat	1	32	0	7
+585	239	338	129	0	chr1	18906	19048	-248937374	+	L2a	LINE	L2	2942	3104	-322	8
+585	994	312	60	25	chr1	19971	20405	-248936017	+	L3	LINE	CR1	2680	3129	-970	9
+585	270	331	7	27	chr1	20530	20679	-248935743	+	Plat_L3	LINE	CR1	2802	2947	-639	1
+
+Le fichier de raquel (filename_rmsk.txt) ressemble à ça, il est donc normal. La question est maintenant pourquoi ce format ne correspond pas à celui décrit sur le site de repeatmasker à http://www.repeatmasker.org/webrepeatmaskerhelp.html
+Le site semble parler du fichier d'annotation (.out). J'essaie de le trouver dans ce que j'ai téléchargé avec cette commande.
+Il semble que j'ai seulement téléchargé le fichier rmsk.txt . 
+
+Je relance le script avec les options SBATCH suivantes:
+#SBATCH -- job-name="dl_hg38"
+#SBATCH -o /scratch/qtbui_TE/analysis/squire/download_human_genome/sqFETCH_hg38.out
+#SBATCH -e /scratch/qtbui_TE/analysis/squire/download_human_genome/sqFETCH_hg38.error
+#SBATCH -t 02:00:00
+#SBATCH --mem=8GB
+#SBATCH --nodes=1
+#SBATCH --mail-type=END
+#SBATCH --mail-user=ebordron@etu.u-bordeaux.fr
+#SBATCH --export=ALL
+#SBATCH -M email.com@email.com
+
+et avec les options suivantes: 
+squire Fetch -b hg38 -g -v
+on enlève -r car on a déjà le fichier rmsk.txt; on met -g pour avoir l'UCSC gene annotation. I hope it is the .out file.
+#23/06/21 edit:
+it outputs hg38_refGene.bed ; hg38_refGene.genepred ; and hg38_refGene.gtf files see them in /scratch/qtbui_TE/analysis/squire/download_human_genome/squire_fetch
+
+23/06/21
+Yesterday, quynh told me to modify our bed file to make a rmsk.txt. so I need to get rid of certain columns and put the good ones at the good emplacement.
+In order to do this, I need to konw what to put in the third column. so let's use squire clean on the human genome downloaded yesterday with squire fetch; maybe I'll be able to see what is the third columns. 
+On a sidenote, I could also dive in Fetch.py to see if squire gets first the repeatmasker file as a .out (which structure is known), then re-arranges it to make a rmsk.txt file. I could even just see if the UCSC genome is a .out
+
+There is a file named Marouch_TE.bed in /scratch/qtbui_TE/analysis/squire/squire_clean . It is our file given by Quynh that we placed here for squire to use it.
+I will now use squire clean on the downloaded human genome in /scratch/qtbui_TE/analysis/squire/download_human_genome/squire_fetch
+For this, I will refer to Raquel's script if it exists. if not, I will check squire's script and use it. Nevermind, I have it already in /scratch/qtbui_TE/analysis/squire/scripts_squire , as I used it on Raquel's rmsk.txt .
+
+clean.sh is running. In teh meantime, I will launch again run_mapping as I attempted to launch it yesterday in the early to mid afternoon with these parameters:
+#SBATCH --job-name="map_job_7j"
+###SBATCH -e /scratch/qtbui_TE/analysis/squire/logs/err_map_job7j%a.out
+#SBATCH -o /scratch/qtbui_TE/analysis/squire/logs/std_map_job7j%a.out
+#SBATCH -t 7-00:00:00
+#SBATCH --mem=1TB
+#SBATCH --nodes=1
+#SBATCH --mail-type=END  ###PBS -m bea
+#SBATCH --export=ALL  ###PBS -V
+#SBATCH --mail-user=ebordron@etu.u-bordeaux.fr
+#SBATCH --array=1-124           # we have 124 samples
+
+...but it is still pending this morning at 11:40 for the following reason:
+(Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+I will launch it again with these parameters:
+
+#SBATCH --job-name="map_4j"
+###SBATCH -e /scratch/qtbui_TE/analysis/squire/logs/err_map_4j%a.out
+#SBATCH -o /scratch/qtbui_TE/analysis/squire/logs/std_map_4j%a.out
+#SBATCH -t 4-00:00:00
+#SBATCH --mem=500GB
+#SBATCH --nodes=1
+#SBATCH --mail-type=END
+#SBATCH --export=ALL
+#SBATCH --mail-user=ebordron@etu.u-bordeaux.fr
+#SBATCH --array=1-124           # we have 124 samples
+I did it at 15:13 .
+
+résumé du pipeline: 
+squire fetch produit un rmsk.txt. squire clean prend ce fichier pour créer un .bed.
+je dois donc regarder ce qui se trouve dans le rmsk.txt pour savoir quel fichier je dois donner en entrée.
+lancer clean sur le rmsk.txt du génome humain produit un bed, mais ça ne m'aide pas forcément... je vais comparer les 2 quand meme pour voir.
+24/06:
+après des recherches j'ai trouvé que la 3eme colonne du rmsk était le pourmillage de substitutions. ça étonne quynh qu'il ait besoin de ça; je vais tenter de lancer clean sur ce rmsk.txt mais SANS sa col 3 pour voir si le bed que j'ai en sortie change du bed que j'ai avec le rmsk.txt complet.
+donc dans les tâches j'ai:
+
+**********************************************************
+-LANCER CLEAN SUR RMSK SANS COL3
+	REGARDER LES RÉSULTATS DU MAPPING QUI A TOURNÉ HIER EN GENRE 30 MIN MAIS A MIS DU TEMPS À SE LANCER: REGARDER .BEDS ET .LOGS 
+	REGARDER LES RÉSULTATS DE CE CLEAN ET COMPARER CE BED AVEC L'ANCIEN BED.
+-	FAIRE UN GITHUB NON PLUTÔT MODIFIER MON GITHUB POUR FAIRE UN REPO SQUIRE DESSUS ET Y METTRE MON README. COMPLÉTER LE README.
+**********************************************************
+je les fais dans l'ordre.
+
+j'essaie de faire marcher sed (voir https://www.theunixschool.com/2013/02/sed-examples-replace-delete-print-lines-csv-files.html)
+
+sed 's/\(Ubuntu\)\(,.*,\).*/\1\299/' input_sed_test.txt > output_sed_test.txt  
+input: 
+Solaris,Ubuntu,11
+Ubuntu,21,2
+Fedora,21,3
+LinuxMint,45,4
+RedHat,12,5
+
+output:
+Solaris,25,11
+Ubuntu,31,99
+Fedora,21,3
+LinuxMint,45,4
+RedHat,12,5
+
+
+sed 's/\(Ubuntu\)\(,.*,\).*/\2\299/' input_sed_test.txt > output_sed_test.txt  
+input est le même.
+output:
+Solaris,Ubuntu,11
+,21,,21,99
+Fedora,21,3
+LinuxMint,45,4
+RedHat,12,5
+
+
+sed 's/\(Ubuntu\)\(,.*,\).*/\3\299/' input_sed_test.txt > output_sed_test.txt  
+input est le même.
+output:
+sed: -e expression #1, char 30: invalid reference \3 on `s' command's RHS
+
+
+sed 's/\(Ubuntu\)\(,.*,\).*/\1\199/' input_sed_test.txt > output_sed_test.txt  
+output:
+Solaris,Ubuntu,11
+UbuntuUbuntu99
+Fedora,21,3
+LinuxMint,45,4
+RedHat,12,5
+
+nvm, actually this is better: 
+awk -F, '{print $1"/"$3":"$2}' < input.txt > output.txt 		# -F is the separator.
+
+I have to do:
+**********************************************************
+- The introduction of my internship report. Reading the articles (2, 3?) Is needed for that. I should do a quick 5-6 lines resume of each article to set me on the tracks. This part should cover:
+	-Context and interest of my internship and the tool.
+	-How and Why it is of interest.
+I think I would benefit from giving a first try to Quynh and Marie at the end of next week, So that they could point me in the right direction. This is what we agreed on (but if I am unable to do it, it's okay).
+**********************************************************
+16:16 : 
+Bad news for the mapping that completed quick : the output and log folders are empty of this job. My guess is that I had modified these folders during / before launching this job, rending the job unable to finish correctly. There must be a log of this somewhere.
+For now, I corrected the paths in reun_mapping.sh and will launch it back right now. 4 days, 500Gb
+launched 16:25 . 
+Also I just launched the removing of the third column of the true rmsk.txt file. It was done within a minute.
+16:35 : I now have launched clean with the rmsk missing the third column. It was 3 minutes long last time I did it on the hg38 complete genome.
+It finished after 5 minutes. Let's compare the .beds now.
+So the normal bed seems to have 1 more line than the modified one. what about the rmsk files?
+
+1ere col: locus
+2: ordre
+3: 
+
+
+25/06 : 
+quynh sent me the table that we can use as a repeatmasker file. I will use clean on it. 
+Meanwhile, The job that I started yesterday is now running and was completed for some samples (took 12h for some). the log for these jobs doesn't seem to show errors.
+Clean has been launched, waiting for it to start. 
+I eventually aborted the mapping as it was taking up too much time for the clean job to complete. the cleaning is now done.
+I will compare this clean's output to the output given by clean on the human genome. Let's go!
+**********************************************************
+-keep working on the readme
+-Do a résumé of the articles for the introduction
+-launch again the mapping job before the week-end
+**********************************************************
+
+18:11 : 
+run_mapping lancé de nouveau.
+#SBATCH --job-name="map_4j"
+###SBATCH -e /scratch/qtbui_TE/analysis/squire/logs_run_map/err_map_4j%a.out
+#SBATCH -o /scratch/qtbui_TE/analysis/squire/logs_run_map/std_map_4j%a.out
+#SBATCH -t 4-00:00:00
+#SBATCH --mem=500GB
+#SBATCH --nodes=1
+#SBATCH --mail-type=BEGIN,END,FAIL,ARRAY_TASKS
+#SBATCH --export=ALL
+#SBATCH --mail-user=ebordron@etu.u-bordeaux.fr
+#SBATCH --array=1-124           # we have 124 samples
+
+I compared the results of the clean on the file with 0s on col 3 (the output is a .bed) that quynh gave me with the .bed (output of clean with human genome). 
+here's the head of the docs:
+
+###### our data ######
+(base) [ebordron@login02 output]$ pwd
+/scratch/qtbui_TE/analysis/squire/clean_on_our_data/output
+(base) [ebordron@login02 output]$ head table_col_0.txt_all.bed 
+chr1	43849613	43849713	chr1|43849613|43849713|mp131073-1_chr1_DTX-incomp_reswagMde-B-R2276-Map20:DTX:TIR|0|+	0	+	43849613	43849713	120,91,12
+chr1	43728152	43728320	chr1|43728152|43728320|mp131074-1_chr1_DTX-incomp_reswagMde-B-R3621-Map9:DTX:TIR|0|-	0	-	43728152	43728320	94,137,255
+chr1	43822961	43823104	chr1|43822961|43823104|mp131075-1_chr1_DTX-incomp_reswagMde-B-R5137-Map13_reversed:DTX:TIR|0|+	0	+	43822961	43823104	120,91,12
+chr1	43854171	43854284	chr1|43854171|43854284|mp131076-1_chr1_DTX-incomp_reswagMde-B-R5137-Map13_reversed:DTX:TIR|0|+	0	+	43854171	43854284	120,91,12
+chr1	43819314	43819425	chr1|43819314|43819425|mp131077-1_chr1_DTX-incomp_reswagMde-B-R608-Map20:DTX:TIR|0|+	0	+	43819314	43819425	120,91,12
+chr1	43834255	43834366	chr1|43834255|43834366|mp131078-1_chr1_DTX-incomp_reswagMde-B-R608-Map20:DTX:TIR|0|+	0	+	43834255	43834366	120,91,12
+chr1	43849921	43850053	chr1|43849921|43850053|mp131079-1_chr1_DTX-incomp_reswagMde-B-R608-Map20:DTX:TIR|0|+	0	+	43849921	43850053	120,91,12
+chr1	43771819	43771996	chr1|43771819|43771996|mp131080-1_chr1_DTX-incomp_reswagMde-B-R6235-Map4:DTX:TIR|0|-	0	-	43771819	43771996	94,137,255
+chr1	43772016	43772178	chr1|43772016|43772178|mp131080-2_chr1_DTX-incomp_reswagMde-B-R6235-Map4:DTX:TIR|0|-	0	-	43772016	43772178	94,137,255
+chr1	43673605	43673665	chr1|43673605|43673665|mp131081-1_chr1_DXX-MITE_reswagMde-B-G5785-Map16:DXX:II_Unclassified|0|-	0	-	43673605	43673665	94,137,255
+
+###### human genome ######
+(base) [ebordron@login02 clean_on_squires_rmsk]$ pwd
+/scratch/qtbui_TE/analysis/squire/clean_on_squires_rmsk
+(base) [ebordron@login02 clean_on_squires_rmsk]$ head normal_hg38_all.bed 
+chr1	11504	11675	chr1|11504|11675|L1MC5a:L1:LINE|251|-	251	-	11504	11675	94,137,255
+chr1	11677	11780	chr1|11677|11780|MER5B:hAT-Charlie:DNA|294|-	294	-	11677	11780	94,137,255
+chr1	15264	15355	chr1|15264|15355|MIR3:MIR:SINE|230|-	230	-	15264	15355	94,137,255
+chr1	18906	19048	chr1|18906|19048|L2a:L2:LINE|338|+	338	+	18906	19048	120,91,12
+chr1	19971	20405	chr1|19971|20405|L3:CR1:LINE|312|+	312	+	19971	20405	120,91,12
+chr1	20530	20679	chr1|20530|20679|Plat_L3:CR1:LINE|331|+	331	+	20530	20679	120,91,12
+chr1	21948	22075	chr1|21948|22075|MLT1K:ERVL-MaLR:LTR|279|+	279	+	21948	22075	120,91,12
+chr1	23119	23371	chr1|23119|23371|MIR:MIR:SINE|282|-	282	-	23119	23371	94,137,255
+chr1	23803	24038	chr1|23803|24038|L2b:L2:LINE|284|+	284	+	23803	24038	120,91,12
+chr1	24087	24250	chr1|24087|24250|MIR:MIR:SINE|242|+	242	+	24087	24250	120,91,12
+
+It is very similar but the 0 field seems indeed to be missing. Mapping need only the output of Fetch, not Clean, or so it seems.
+
+changed a bit the output and log folders of run_mapping.sh . relaunched the job.
+
+I will later try to launch count with this.
+
+28/06 : 
+11:03
+This morning, starting at 9:00, I participated to a meeting with Quynh, her colleagues and the head of the team. I need to continue the introduction.
+Right now:
+-Mapping is done for some array jobs (~45). 
+Note: If a time limit is applied for a job that starts array jobs, The time limit applies individually for each array job. It means that the job itself can take weeks (hypothetically) to run, but each array job has to  the time limit. 
+The maximal running time for a mappiong array job was around 22:30; the upper time limit can be set to 1 day and 12 hours, or 2 days for a first run. 
+
+This week's global objective is :
+╔═══════════════════════════════════╗
+|launch count and write introduction|
+╚═══════════════════════════════════╝
+Today's objectives are: 
+-See if the mapping job fully completed. Did it end before some samples could be mapped?
+-launch count. write here what it needs. Launch it on the 45 samples that were mapped.
+
+**********************************************************
+In the future, I will have to modify the scripts for mapping. 
+Right now, when a map array job finishes, the output goes in this folder: /scratch/qtbui_TE/analysis/squire/run_map/output_run_map/squire_map .
+The problem is that this applies to all of the map array jobs. This result in a messy folder containing dozens of files for all our samples.
+It would be better to do what Raquel did: when a map array job finishes, the output goes in a single folder created for this sample and named after it.
+
+In order to do this, I need to wait for the mapping job to finish.
+**********************************************************
+
+to launch count, I need (tabulate if completed):
+	1. to fill run_count.sh
+		Raquel does this: run_count.sh calls loop_count.sh and gives it arguments.sh as an argument; except that arguments.sh must be stored in the path containing the output of count. I will store arguments.sh with the other scripts instead.
+	2. to fill loop_count.sh
+	
+3. to fill arguments.sh
+
+Meanwhile, I did a script to automatically transfer the mapping results in individual folders, so I will use this for the count step. Now let's fill arguments.sh just as Raquel did.
+However, I still don't understand why there was 58 A0014.bam files in the results folder. ---- Nevermind, it was certainly a set of temporary files.
+
+!------ATTENTION------!
+I modified something about the count step.
+From what I understood, in Raquel's script, all the .bam are in the map_folder. The script knows what file to use as we give the argument --name, which indicates the basename of the .bam .
+I use the basename to indicate a specific map_folder to the script. this map_folder contains only one bam e.g. the result of mapping for one sample.
+The structure is :
+a "global" map_folder which contains 124 folders, one per sample. each folder contains all of the results produced for the corresponding sample at the mapping step.
+That's it.
+!---------------------!
+
+17:43
+I created the /scratch/qtbui_TE/analysis/squire/squire_download folder because it exists as a field in arguments.sh .
+I run the run_count.sh script with these arguments:
+#! /bin/bash
+#SBATCH --job-name="count_2j"
+###SBATCH -e /scratch/qtbui_TE/analysis/squire/squire_count/logs_run_count/err_count_2j%a.out
+#SBATCH -o /scratch/qtbui_TE/analysis/squire/squire_count/logs_run_count/std_count_2j%a.out
+#SBATCH -t 2-00:00:00
+#SBATCH --mem=500GB
+#SBATCH --nodes=1
+#SBATCH --mail-type=ALL,ARRAY_TASKS
+#SBATCH --export=ALL
+#SBATCH --mail-user=ebordron@etu.u-bordeaux.fr
+#SBATCH --array=1-50           # we have 124 samples
+
+I run it for the 50 samples that finished the mapping. also an hour earlier I updated the mapping timeout limit from 4days to 2 days, so it should take less time to complete.
+After Quynh's answer on that matter, I switched it back on 4 days. I'll ask David about it right now.
+
+
+@@@@@@@@@@@@@@@@ 29/06 @@@@@@@@@@@@@@@@
+
+13:20
+I put the map job on hold today in order to let the count job start. It ended quickly while trying to use the "squire2" conda environment (I use only "squire"). I will adapt it to work on only 2 samples for the time being to debug it. I did this by changing 50 to 2 in the first lines of run_count.sh. the SLURM_ARRAY_ID will only take the values 1 and 2.
+launched in squire envt, at 13:24, and put the mapping on hold.
+switched count's vmem from 500GB to 200GB and relaunched it at 13:28.
+I will now mail David Benaben about the time limit in array jobs.
+Done at around 13:25.
+I had left --build and --fetch_folder in loop_count.sh. I removed build as we don't use it and completed fetch_folder even though we don't use it.
+15:02
+Count.py shows an error:
+  File "/gpfs/home/ebordron/SQuIRE/squire/Count.py", line 218, in filter_tx
+    gene_dict[(gtf_line.Gene_ID,gtf_line.strand)].add_counts(counts)  
+KeyError: ('STRG.3', '+')
+16:56
+In Count.py, the error comes from the function filter_tx() that calls at line 1575. it reads the file $basename.gtf from the $count_folder given in argument. Put simply, when it reads the .gtf, there is a problem.
+This gtf comes from the Count output folder, so it seems that count creates the gtf then gets an information from it.
+
+@@@@@@@@@@@@@@@@ 29/06 @@@@@@@@@@@@@@@@
+9:18
+added some prints in count.py to see if the error pops up at the first line.
+
+David answered me yesterday, I will use what he said on my mapping job.
+The command he used:
+sacct -j 6116655 --format=jobid,jobname,partition,ReqMem,maxrss,ntasks,alloccpus,elapsed,state,exitcode
+prints the amount of memory a job uses. It seems to be 11.5GB at maximum.
+
+Concerning count, I need to see what it needs to create its file in order to know if I can run it with a different file.
+So I think it is one .gtf per sample, so it might be taking our mapping results.
+
+How to use more CPUs in a SLURM job?
+After searching in this web page: https://slurm.schedmd.com/sbatch.html
+, it turns out that the commands with "cpu" or "core" in their name are:
+(if indented, useless)
+	--cpu-freq	 #choisir la freq du CPU
+--cpus-per-gpu # The job will require n processors per allocated GPU. Not compatible with the --cpus-per-task option.
+--cpus-per-task #job will require n number of processors per task.
+--mem-per-cpu
+--mincpus
+
+--cores-per-socket
+--ntasks-per-core
+--core-spec
+--threads-per-core
+
+@@@@@@@@@@@@@@@@ 29/06 @@@@@@@@@@@@@@@@
+I can just use --cpus-per-task when needed.
+
+RDV with caroline
+
+squire Count --read_length 80 --name SRR3129837 -p 20
+
+squire Map \
+-1 /home/cmeguerditchian/TE_cancer/ncbi_PRJNA310012/trimmomatic/SRR3129837_1_paired.fastq \
+-2 /home/cmeguerditchian/TE_cancer/ncbi_PRJNA310012/trimmomatic/SRR3129837_2_paired.fastq \
+--read_length 80 \
+-p 20
+
+
+
+see cahier for more details.
+
+@@@@@@@@@@@@@@@@ 02/07 @@@@@@@@@@@@@@@@
+Caroline sent me the 10 first lines of her files for the output of clean, map and count.
+We saw yesterday that my refGene.gtf file (fetch output) was different (some columns switched), so let's see how we can change that. I'll first compare the files to establish in what state we are. 
+I just struggled a bit while comparing clean's output, but let's see fetch's output. Indeed, Map uses fetch's output: refGene.gtf
+When fetch runs, it produces among other things a refGene.gtf file. As Quynh provided this file, we did not launch Fetch. However, the layout is different between our files. I shall correct this.
+Once the refGene.gtf will be fixed, I will be able to launch Map again. But let's check the other files produced by fetch before. Done. We use only a .gff (given by quynh), but fetch doesn't seem create one. for now I'll just modify the gtf OR the map python script. First I'll check if this script actually uses this gtf. That's the case. I'll see if I can modify this. The script just executes a STAR command and gives the .gtf in argument, not specifying the columns. I will modify the gtf rather than try to modify the STAR scripts, which I know nothing about.
+
+22:07
+I'm gonna modify the gtf and try to run the mapping over the week-end. 
+The gtf is good now, I have a backup if needed in /scratch/qtbui_TE/analysis/squire/squire_fetch/stock_Marouch_refGenegtf .
+I will move the old mapping results then run mapping on TWO samples first. if no error this evening I will execute it with the 124 samples.
+23:30
+it did not start, was still pending. I just executed it with the 124 samples.
+
+@@@@@@@@@@@@@@@@ 05/07 @@@@@@@@@@@@@@@@
+I must note that I modified Map.py on the 121st line to add fields that are present in our modified file in the STAR command (called in map.py)
+
+I copied all the scripts existing at 15:35 in the x folder to the /gpfs/home/ebordron/tmp_ebordron/run_squire/Marouch_scripts_copy folder. old scripts are in a sister directory called "old".
