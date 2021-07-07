@@ -380,3 +380,151 @@ I copied all the scripts existing at 15:35 in the x folder to the /gpfs/home/ebo
 I Started to edit arguments.sh in /home/waren/Desktop/stage/my_github/squire_usage/clean as I put "arguments.sh" In the "required files" section of the clean README.md . I will later move arguments.sh out of clean as it is meant to be used for all commands. 
 The idea is to have the file arguments.sh if the reader wants to see it, but I will specify what each command needs in their respective README's. For instance, Clean uses /scratch/qtbui_TE/analysis/squire/squire_clean/clean_on_our_data/input/table_col_0.txt , which path is given by arguments.sh , but I will specifiy thus path in clean's README so that the reader knows what element of arguments.sh is needed for each command.
 
+@@@@@@@@@@@@@@@@ 06/07 @@@@@@@@@@@@@@@@
+10:45
+
+Map's output when it had the "Gene ID not found" error was:
+#command: wc filename
+114-1-1Aligned.out.bam			0 0 0
+114-1-1.bam						9545306   53896993 2536508723
+114-1-1.bam.bai					2154  12990 753704
+114-1-1Chimeric.out.junction	0 0 0
+114-1-1.log						37  230 2034
+114-1-1Log.out					305845  3052729 36960816
+114-1-1Log.progress.out			3  30 277
+114-1-1SJ.out.tab				156111 1404999 5647941
+#command: ls -nh foldername
+114-1-1_STARgenome:
+	-rw-r--r-- 1 1707 1005 5,4M 25 juin  18:12 exonGeTrInfo.tab
+	-rw-r--r-- 1 1707 1005 2,4M 25 juin  18:12 exonInfo.tab
+	-rw-r--r-- 1 1707 1005 1,3M 25 juin  18:12 geneInfo.tab
+	-rw-r--r-- 1 1707 1005 3,6M 25 juin  18:12 sjdbInfo.txt
+	-rw-r--r-- 1 1707 1005 3,6M 25 juin  18:12 sjdbList.fromGTF.out.tab
+	-rw-r--r-- 1 1707 1005 3,3M 25 juin  18:12 sjdbList.out.tab
+	-rw-r--r-- 1 1707 1005 2,5M 25 juin  18:12 transcriptInfo.tab
+114-1-1_STARpass1:
+	total 0
+114-1-1_STARtmp
+	-rw-r--r-- 1 1707 1005  95 25 juin  18:12 readFilesIn.info
+	-rwx------ 1 1707 1005 170 25 juin  18:12 readsCommand_read1
+	-rwx------ 1 1707 1005 170 25 juin  18:12 readsCommand_read2
+	prw------- 1 1707 1005   0 25 juin  18:12 tmp.fifo.read1
+	prw------- 1 1707 1005   0 25 juin  18:12 tmp.fifo.read2
+
+
+Map's output after the columns of the refGene.gtf file have been swapped (with /scratch/qtbui_TE/analysis/squire/scripts_squire/additional_scripts):
+#command: wc filename
+114-1-1.bam						9453042   53313842 2511372947
+114-1-1.bam.bai					1214   7264 419512
+114-1-1Chimeric.out.junction	0 0 0
+114-1-1.log						37  230 2034
+114-1-1SJ.out.tab				149921 1349289 5425877
+#command: ls -nh foldername
+114-1-1_STARgenome
+	-rw-r--r-- 1 1707 1005 6,0M  5 juil. 20:15 exonGeTrInfo.tab
+	-rw-r--r-- 1 1707 1005 2,4M  5 juil. 20:15 exonInfo.tab
+	-rw-r--r-- 1 1707 1005 1,8M  5 juil. 20:15 geneInfo.tab
+	-rw-r--r-- 1 1707 1005 5,1M  5 juil. 21:57 sjdbInfo.txt
+	-rw-r--r-- 1 1707 1005 4,0M  5 juil. 20:15 sjdbList.fromGTF.out.tab
+	-rw-r--r-- 1 1707 1005 4,6M  5 juil. 21:57 sjdbList.out.tab
+	-rw-r--r-- 1 1707 1005 2,6M  5 juil. 20:15 transcriptInfo.tab
+114-1-1_STARpass1
+	-rw-r--r-- 1 1707 1005 2,0K  5 juil. 21:57 Log.final.out
+	-rw-r--r-- 1 1707 1005 5,2M  5 juil. 21:57 SJ.out.tab
+
+Conlusion: there seem to be less files, I must see if there is still this difference after the mapping fully completes. 
+Also, the Chimeric.out.junction file is still empty.
+
+
+since some maps jobs are done, I'll try to execute count on 2 of these samples, even though junction is still empty.
+the name of this count job is count_modified_refGene_2samples.
+executed at 15:05
+I cancel it
+I activate squire
+I execute it (with sbatch and not bash)
+I realize I only ran /scratch/qtbui_TE/analysis/squire/squire_map/output_run_map/scripts_for_data_management/create_dirs.sh , which only creates the directories. This script can be run from anywhere, it will create one folder per sample in /scratch/qtbui_TE/analysis/squire/squire_map/output_run_map/map_output_for_count .
+transfer_files.sh fills these folders with the actual data from mapping for each sample; It can also be run from anywhere. Actually, at some point in transfer_files.sh , I do "mv input_folder/basename* output_folder/basename/" which means "create a folder called basename if it doesn't exist" so maybe create_dirs.sh  is actually useless. I don't think it's an important matter though.
+
+clean_folder : important information: 
+the output of clean, in our case, should contain at least 2 files with this name structure: basename_all.bed  basename_all_copies.txt .
+
+count finished quick, the error seem different:
+There are 270 000 lines of "Warning: invalid GTF record, transcript_id not found:
+chr1	transdecoder	exon	20915842	20915869	.	-	.	gene_id	"PruarM.1G387700";	transcript_id	"PruarM.1G387700.t1.p1";
+".
+ I'll compare the refGene.gtf we give in argument with the same file for human genome = output of fetch. Done; the columns correspond perfectly: 
+ 
+ (base) [ebordron@login01 squire_fetch]$ ls
+human_data  logmarouch.out  our_data  test_col.sh
+(base) [ebordron@login01 squire_fetch]$ vim test_col.sh 
+(base) [ebordron@login01 squire_fetch]$ rm logmarouch.out 
+(base) [ebordron@login01 squire_fetch]$ vim test_col.sh 
+(base) [ebordron@login01 squire_fetch]$ bash test_col.sh 
+(base) [ebordron@login01 squire_fetch]$ ls
+human_data  logmarouch.out  our_data  test_col.sh
+(base) [ebordron@login01 squire_fetch]$ cat logmarouch.out 
+chr1 a transdecoder z exon e 19904 r 20044 t . y + u . i gene_id o "PruarM.1G000100"; p transcript_id q "PruarM.1G000100.t1.p1";
+chr1 a transdecoder z exon e 20148 r 20257 t . y + u . i gene_id o "PruarM.1G000100"; p transcript_id q "PruarM.1G000100.t1.p1";
+chr1 a transdecoder z exon e 20365 r 20437 t . y + u . i gene_id o "PruarM.1G000100"; p transcript_id q "PruarM.1G000100.t1.p1";
+chr1 a transdecoder z exon e 21107 r 21168 t . y + u . i gene_id o "PruarM.1G000100"; p transcript_id q "PruarM.1G000100.t1.p1";
+chr1 a transdecoder z exon e 21847 r 21988 t . y + u . i gene_id o "PruarM.1G000100"; p transcript_id q "PruarM.1G000100.t1.p1";
+chr1 a transdecoder z exon e 23272 r 23490 t . y + u . i gene_id o "PruarM.1G000100"; p transcript_id q "PruarM.1G000100.t1.p1";
+chr1 a transdecoder z exon e 23633 r 23699 t . y + u . i gene_id o "PruarM.1G000100"; p transcript_id q "PruarM.1G000100.t1.p1";
+chr1 a transdecoder z exon e 25537 r 25936 t . y + u . i gene_id o "PruarM.1G000100"; p transcript_id q "PruarM.1G000100.t1.p1";
+chr1 a transdecoder z exon e 27296 r 27443 t . y + u . i gene_id o "PruarM.1G000100"; p transcript_id q "PruarM.1G000100.t1.p1";
+chr1 a transdecoder z exon e 27567 r 27727 t . y + u . i gene_id o "PruarM.1G000100"; p transcript_id q "PruarM.1G000100.t1.p1";
+(base) [ebordron@login01 squire_fetch]$ 
+(base) [ebordron@login01 squire_fetch]$ vim test_col.sh 
+(base) [ebordron@login01 squire_fetch]$ bash test_col.sh 
+(base) [ebordron@login01 squire_fetch]$ ls
+human_data  loghuman.out  logmarouch.out  our_data  test_col.sh
+(base) [ebordron@login01 squire_fetch]$ cat loghuman.out 
+chr1 a squire_fetch/hg38_refGene.genepred z exon e 11874 r 12227 t . y + u . i gene_id o "DDX11L1"; p transcript_id q "NR_046018";
+chr1 a squire_fetch/hg38_refGene.genepred z transcript e 11874 r 14409 t . y + u . i gene_id o "DDX11L1"; p transcript_id q "NR_046018";
+chr1 a squire_fetch/hg38_refGene.genepred z exon e 12613 r 12721 t . y + u . i gene_id o "DDX11L1"; p transcript_id q "NR_046018";
+chr1 a squire_fetch/hg38_refGene.genepred z exon e 13221 r 14409 t . y + u . i gene_id o "DDX11L1"; p transcript_id q "NR_046018";
+chr1 a squire_fetch/hg38_refGene.genepred z exon e 14362 r 14829 t . y - u . i gene_id o "WASH7P"; p transcript_id q "NR_024540";
+chr1 a squire_fetch/hg38_refGene.genepred z transcript e 14362 r 29370 t . y - u . i gene_id o "WASH7P"; p transcript_id q "NR_024540";
+chr1 a squire_fetch/hg38_refGene.genepred z exon e 14970 r 15038 t . y - u . i gene_id o "WASH7P"; p transcript_id q "NR_024540";
+chr1 a squire_fetch/hg38_refGene.genepred z exon e 15796 r 15947 t . y - u . i gene_id o "WASH7P"; p transcript_id q "NR_024540";
+chr1 a squire_fetch/hg38_refGene.genepred z exon e 16607 r 16765 t . y - u . i gene_id o "WASH7P"; p transcript_id q "NR_024540";
+chr1 a squire_fetch/hg38_refGene.genepred z exon e 16858 r 17055 t . y - u . i gene_id o "WASH7P"; p transcript_id q "NR_024540";
+(base) [ebordron@login01 squire_fetch]$ pwd
+/scratch/qtbui_TE/analysis/squire/squire_fetch
+(base) [ebordron@login01 squire_fetch]$ 
+
+I separated the columns with azertyuiopq . I think the quotes might be causing the error. I'll see how the count.py script uses this field. Does it search a key for a dictionary? Regarding that, the script itself might not be using a specific column, actually it might give the whole file to an other command.
+There seemm to be a problem with the script 
+the error is: "Not a conda environment: /scratch/qtbui_TE/analysis/squire/scripts_squire/arguments.sh". it corresponds to the line 28 run_count.sh :
+"source $(conda info --base)/bin/activate"
+
+@@@@@@@@@@@@@@@@ 07/07 @@@@@@@@@@@@@@@@
+I tried to hardcode the path (coder en dur). I have this line: 
+"source /gpfs/home/ebordron/miniconda3/bin/activate"
+but the same error occurs. I also replaced "source" with "conda", the command doesn't work anymore.
+But I had not activated squire while doing so. I do it again now, squire is activated.
+I looked this problem with Marie, I will try to see what happens for mapping. If the mapping runs correctly, I'll copy paste its header to count.
+
+Mapping launched with these options:
+#SBATCH --job-name="map_2j_3cpu"
+###SBATCH -e /scratch/qtbui_TE/analysis/squire/squire_map/logs_run_map/err_map_4j%a.out
+#SBATCH -o /scratch/qtbui_TE/analysis/squire/squire_map/test_map_conda/std_map_4j%a.out
+#SBATCH -t 2-00:00:00
+#SBATCH --mem=20GB # previously 70GB
+#SBATCH --cpus-per-task=2
+#SBATCH --nodes=1
+#SBATCH --mail-type=ALL,ARRAY_TASKS
+#SBATCH --export=ALL
+#SBATCH --mail-user=elie.bordron0@gmail.com
+#SBATCH --array=1-2             # we have 124 samples   #07/07/2021 I want to see if mapping stops at source $(conda info --base)/bin/activate just like count does.
+All the results will go in /scratch/qtbui_TE/analysis/squire/squire_map/test_map_conda
+the mapping job has been launched but doesn't appear when I do "squeue -u ebordron",  neither when I call "squeue --jobid 6169407". I can only see it with "scontrol show job 6169514" (my mouse couldn't move anymore so I restarted the computer. After that, doing scontrol show job 6169407 did nothing so I started another map job (6169514). This job still does'nt appear in squeue.
+So at one moment it appears in "scontrol show job 6169514" but the moment after, it doesn't appear anymore. It's weird.
+Launched it again after creating the folder test_map_conda. id is 6169538 .
+Eventually, the map job ended. conda launches well in it, I'll copy paste it. it's the next step.
+I did not copy anything but I restarted my ssh session by closing and opening the terminal; I modified some things in run_mapping.sh and argumetns.sh and now run_count.sh works. I don't know how I solved this.
+
+17:43 : 
+I added clean's readme on the github. I need to focus on this, even though I'm stuck on a count problem. I'll keep working on the readme's and the introduction.
+I had two files named carnet de bord ; one in Desktop/stage and one in Desktop/stage/my_github/...
+I'll keep the github one. it is this one.
