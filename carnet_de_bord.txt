@@ -376,3 +376,7 @@ it did not start, was still pending. I just executed it with the 124 samples.
 I must note that I modified Map.py on the 121st line to add fields that are present in our modified file in the STAR command (called in map.py)
 
 I copied all the scripts existing at 15:35 in the x folder to the /gpfs/home/ebordron/tmp_ebordron/run_squire/Marouch_scripts_copy folder. old scripts are in /gpfs/home/ebordron/tmp_ebordron/run_squire/old .
+18:04
+I Started to edit arguments.sh in /home/waren/Desktop/stage/my_github/squire_usage/clean as I put "arguments.sh" In the "required files" section of the clean README.md . I will later move arguments.sh out of clean as it is meant to be used for all commands. 
+The idea is to have the file arguments.sh if the reader wants to see it, but I will specify what each command needs in their respective README's. For instance, Clean uses /scratch/qtbui_TE/analysis/squire/squire_clean/clean_on_our_data/input/table_col_0.txt , which path is given by arguments.sh , but I will specifiy thus path in clean's README so that the reader knows what element of arguments.sh is needed for each command.
+
