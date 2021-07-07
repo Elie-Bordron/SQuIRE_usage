@@ -2,7 +2,7 @@
 
 ## Input
 
-- arguments.sh (must be given from the command line)
+- arguments.sh (must be given from the command line.)
 - table_col_0.txt (the custom-made repeatmasker file. make sure that the columns are the same as in a repeatmasker file.)
 
 
