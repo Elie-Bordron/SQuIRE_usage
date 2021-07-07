@@ -7,9 +7,7 @@ My work dealed with the tool [SQuIRE](https://github.com/wyang17/SQuIRE). You ma
 
 <<<<<<< HEAD
 These informations are in disorder, I shall edit this file regularly.
-=======
-...................These informations are in disorder, I shall edit this file regularly...................
->>>>>>> e171c0e0b284cf94416b4cca345418a1edfe7705
+>>>>>>> 
 
 ## Installation tips
 
