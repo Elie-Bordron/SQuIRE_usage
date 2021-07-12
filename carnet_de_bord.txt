@@ -528,3 +528,73 @@ I did not copy anything but I restarted my ssh session by closing and opening th
 I added clean's readme on the github. I need to focus on this, even though I'm stuck on a count problem. I'll keep working on the readme's and the introduction.
 I had two files named carnet de bord ; one in Desktop/stage and one in Desktop/stage/my_github/...
 I'll keep the github one. it is this one.
+
+@@@@@@@@@@@@@@@@ 08/07 @@@@@@@@@@@@@@@@
+09:46
+Quynh's mail: "As tu regardé dans le count pour savoir s'il compte sur gene_id ou transcrtit_id? Il faut qu'il compte sur gene_id."
+I checked out Count.py (in /gpfs/home/ebordron/SQuIRE/squire), and searched for "gene_id" and "transcript_id" in order to modify the script to make it NOT use transcript_id.
+
+(base) [ebordron@login01 squire]$ cat Count.py | grep gene_id -in
+190:			elif self.attribute[0]=="gene_id":
+191:				self.Gene_ID=self.attribute[1]
+199:		self.attributes[0] = "gene_id" + " " + '"' + newgeneid + '"'
+221:						gene_dict[(gtf_line.Gene_ID,gtf_line.strand)].add_counts(counts)  
+222:						gene_dict[(gtf_line.Gene_ID,gtf_line.strand)].add_tx(gtf_line.transcript_id)                
+225:				gene_dict[(ref_line.Gene_ID,ref_line.strand)].add_tx(gtf_line.transcript_id)
+233:		self.Gene_ID = line[0]
+245:		self.flagout=[self.Gene_ID,self.fpkm,self.counts]
+246:		self.countsout=[self.chrom,self.start,self.stop,self.Gene_ID,self.fpkm,self.strand,int(round(self.counts)),self.tx_ID_string]
+253:		self.flagout = [self.Gene_ID,self.fpkm,self.counts]
+254:		self.countsout = [self.chrom,self.start,self.stop,self.Gene_ID,self.fpkm,self.strand,int(round(self.counts)),self.tx_ID_string]
+266:				gene_dict[(gene_data.Gene_ID,gene_data.strand)] = gene_data
+268:				if gene_data.Gene_ID in notinref_dict:
+269:					gene_dict[(gene_data.Gene_ID,gene_data.strand)] = gene_data
+
+(base) [ebordron@login01 squire]$ cat Count.py | grep transcript_id -in
+194:			elif self.attribute[0]== "transcript_id":
+195:				self.transcript_id=self.attribute[1]
+222:						gene_dict[(gtf_line.Gene_ID,gtf_line.strand)].add_tx(gtf_line.transcript_id)                
+225:				gene_dict[(ref_line.Gene_ID,ref_line.strand)].add_tx(gtf_line.transcript_id)
+
+in line 194, I can deactivate the count of transcript_id. first I add some prints ; I then execute count. the log file is /scratch/qtbui_TE/analysis/squire/squire_count/logs_run_count/count_modrefgene_modcountpy%a.out .
+the prints do not appear (they  are in the class gtfline(object) around line 187). I add prints around lines 226-229.
+Turns out I already have prints here. I'll split the log file in std and error.
+I don't see any of my prints. I'll add prints at the beginning of the py script. and in the main() function as well.
+So the program never continues the main() after this line: 
+Stringtie(bamfile,outfolder,basename,strandedness,pthreads,ingtf, verbosity,outgtf_ref_temp)
+...so the problem might be in the Stringtie() function.
+the problem occurs at the last line of Stringtie() : 
+sp.check_call(["/bin/sh", "-c", StringTiecommand])
+The question is , how can I make it NOT use transcript_id's?
+
+
+J'ai regardé count.py . Je ne comprenais pas vraiment comment cette étape marche: je sais qu'on prend les gènes présents dans le .bam de l'échantillon utilisé et qu'on compte le nombre de fois où chaque gène correspond au gène de référence dans le fichier Marouch_refGene.gtf .
+Concrètement, le gene_id de Marouch_refGene.gtf ressemble à ça:  "PruarM.1G539000"
+Je me suis demandé à quoi correspondait le gene_id d'un .bam . J'ai utilisé un script python pour visualiser la première ligne du fichier /scratch/qtbui_TE/analysis/squire/squire_map/output_run_map/map_output_for_count/114-1-1/to_see_bam_content/114-1-1.bam, ça a donné ça :
+
+ A00318:65:HYL3WDSXX:4:1402:31313:31422    163    0    19754    255    74M    0    19839    74    GAAAAAAAAAAAAGTAAACCAAACCCCCGGCCCCAACCCCCAAAAAAATGGTACCAAAAAACAAAAAAAAAATA    array('B', [37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 25, 25, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 11, 37, 37, 37, 37, 37, 37, 25, 25, 37, 37, 37, 37, 25, 25, 25, 37, 37, 37, 37, 25, 25, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 25, 37, 11, 37, 37, 37, 37, 37, 37, 37, 11, 11, 25])    [('NH', 1), ('HI', 0), ('AS', 212), ('nM', 5), ('NM', 5), ('MD', '1G68T0T0C0C0'), ('jM', array('b', [-1])), ('jI', array('i', [-1])), ('MC', '150M')]
+ 
+En séparant les colonnes, on obtient quelque chose de plus lisible:
+
+Field 0 :A00318:65:HYL3WDSXX:4:1402:31313:31422
+Field 1 :163
+Field 2 :0
+Field 3 :19754
+Field 4 :255
+Field 5 :74M
+Field 6 :0
+Field 7 :19839
+Field 8 :74
+Field 9 :GAAAAAAAAAAAAGTAAACCAAACCCCCGGCCCCAACCCCCAAAAAAATGGTACCAAAAAACAAAAAAAAAATA
+Field 10 :array('B', [37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 25, 25, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 11, 37, 37, 37, 37, 37, 37, 25, 25, 37, 37, 37, 37, 25, 25, 25, 37, 37, 37, 37, 25, 25, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 25, 37, 11, 37, 37, 37, 37, 37, 37, 37, 11, 11, 25])
+Field 11 :[('NH', 1), ('HI', 0), ('AS', 212), ('nM', 5), ('NM', 5), ('MD', '1G68T0T0C0C0'), ('jM', array('b', [-1])), ('jI', array('i', [-1])), ('MC', '150M')]
+ 
+Bref, je pense que le gene_id est ('MD', '1G68T0T0C0C0'), mais 1G68T0T0C0C0 n'apparaît pas dans Marouch_refGene.gtf avec grep, ce qui est problématique parce qu'ils sont censés correspondre (si j'ai bien suivi?). je pense que je tiens un bout du problème, je vais continuer dessus mais pas tout de suite, cet après-midi je vais d'abord continuer le readme de map.
+
+I'll compare our gtf with Caroline's::
+It is the human genome's gtf , I already have compared them.
+Also, using /scratch/qtbui_TE/analysis/squire/scripts_squire/additional_scripts/see_bam_content , I compare our .bam layout with caroline's. I used it on my .bam ; but actually I don't have Caroline's .bam so I can't do that.
+
+For now I'll just do the map readme.
+
+In /scratch/qtbui_TE/analysis/squire/squire_fetch/our_data , there is the  		?

@@ -54,4 +54,3 @@ mp100004-1_chr8_RLX-incomp_reswagMde-B-R2312-Map20:RLX:LTR	1	192	192.00
 The log folder is /scratch/qtbui_TE/analysis/squire/squire_clean/clean_on_our_data/error_log.
 
 
-
