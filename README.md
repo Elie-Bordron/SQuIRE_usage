@@ -31,7 +31,7 @@ or
 source activate squire
 ```
 
-If it happens even though squire is activated, removing this environment and create it again might solve the error.
+If this error happens even though squire is activated, removing this environment and create it again might solve the error.
 To do this, first get the name of the environment:
 `conda env list`
 
@@ -40,7 +40,7 @@ Then remove it:
 conda env remove -n env_name
 ```
 
-Navigate then to the directory holding the SQuIRE folder and remove it as well:
+Navigate then to the directory holding the SQuIRE folder and remove it as well (mine is here: /gpfs/home/ebordron/SQuIRE):
 ```bash
 rm -r SQuIRE/
 ```

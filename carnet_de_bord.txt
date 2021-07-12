@@ -597,4 +597,3 @@ Also, using /scratch/qtbui_TE/analysis/squire/scripts_squire/additional_scripts/
 
 For now I'll just do the map readme.
 
-In /scratch/qtbui_TE/analysis/squire/squire_fetch/our_data , there is the  		?
