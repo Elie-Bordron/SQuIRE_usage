@@ -597,3 +597,167 @@ Also, using /scratch/qtbui_TE/analysis/squire/scripts_squire/additional_scripts/
 
 For now I'll just do the map readme.
 
+@@@@@@@@@@@@@@@@ 12/07 @@@@@@@@@@@@@@@@  	# 2 weeks left!!
+On skype:
+"Je crois que j'ai trouvé des soucis
+il faut que tu relances le mapping pour que ça soit propre depuis au début sur le bon fichier gtf
+je t'expliquerai quand on a le temps. Pour l'instant, ne lance rien, tu travailles sur l'introduction et sur le README, essaie de faire un doc claire
+
+par contre, il faut que tu fasses: chmod -R 2775 scripts_squire
+tu fais pareil pour tous les autres dossiers, si non , je n'ai pas la main pour travailler dessus
+
+Pour résumer ce qu'on doit faire mardi: 1) nettoyer tous les fichiers que tu as fait depuis l'étape Mapping. 2) suprrimer le fichier /scratch/qtbui_TE/analysis/squire/squire_fetch/our_data/Marouch_refGene.gtf . 3) déplacer le bon gtf que j'ai mis ici: /scratch/qtbui_TE/analysis/squire/Marouch_3.1_braker214_PruarM.gtf. 4) Renommer ce fichier comme Marouch_refGene.gtf. 5) relancer le squire_map"
+In /scratch/qtbui_TE/analysis/squire/squire_fetch/our_data , I did:
+mkdir old
+mv stock_Marouch_refGenegtf/ old/
+mv Marouch_refGene.gtf  old
+mv /scratch/qtbui_TE/analysis/squire/Marouch_3.1_braker214_PruarM.gtf .
+mv Marouch_3.1_braker214_PruarM.gtf Marouch_refGene.gtf
+
+If this step runs fine , we can delete the "old" folder easily.
+
+11:50
+in analysis/squire/squire_fetch : 
+there is a folder "our_data" and another one "human_data". Having test data and true data in the same directory is bad, so I'll change this. I don't need the human_data part anymore, so I'll just remove it, but in the future, I'll have to do this differently. 
+In the same topic, having a folder "input" in squire_clean is bad, since it is supposed to take from input the rmsk.txt contained in squire_fetch. SO I moved the rmsk.txt in squire_fetch, I'll have to modify these paths in the script. I could also change run_map.sh so that it creates one folder per sample for the output.
+I did that and launched map for 2 samples. I'm gonna debug to have a correct output for map as described above.
+13:57
+I debugged a little and it seems to be working. if these 2 samples work correctly , I'll execute map on all the samples.
+
+
+
+
+
+
+@@@@@@@@@@@@@@@@ 13/07 @@@@@@@@@@@@@@@@
+I commented prints in Count.py that I had previously added in this script:  
+137:    print("Entering Stringtie()", file=sys.stderr)
+155:        print("+1", file=sys.stderr)
+166:    print("str(pthreads)::", str(pthreads), file=sys.stderr)
+176:    print("runoptions::", runoptions, file=sys.stderr)
+177:    print("TEoptions::", TEoptions, file=sys.stderr)
+178:    print("outputs::", outputs, file=sys.stderr)
+179:    print("inputs::", inputs, file=sys.stderr)
+182:    print("+5", file=sys.stderr)
+201:			print("o--------------------------------o", file=sys.stderr)
+202:			print("self.attribute::", self.attribute, file=sys.stderr)
+203:                        print("self.attribute[0]::", self.attribute[0], file=sys.stderr)
+204:                        print("o--------------------------------o", file=sys.stderr)
+228:			print("line number:: ", i, file=sys.stderr)
+229:			print("line:: ", line, file=sys.stderr)
+
+
+
+1588:        print("+1", file=sys.stderr)
+1590:        print("+2", file=sys.stderr)
+1592:        print("+3", file=sys.stderr)
+1594:        print("+4", file=sys.stderr)
+1596:        print("+5", file=sys.stderr)
+1598:        print("+6", file=sys.stderr)
+1604:	print("start filter_tx()", file=sys.stderr)
+
+
+See if mapping runs well. also follow what's in the cahier: I have to check how the junctions file is made and have the skeleton to do the introduction.
+Marie also sent me what an other M1 did for the introduction.
+
+@@@@@@@@@@@@@@@@ 15/07 @@@@@@@@@@@@@@@@
+The mapping ran weirdly, there were files likes this: basename_fastq01.bam up to maybe 56 from 01. some logs indicate that the job has been canceled, I don't remember if I did it manually. I delete everything and do it again. but with 20GB.
+I ran it for all samples at 9:27. so far, no one uses a bigmem node.
+9:29  : so the 39th (basename="61-1") job seem to be ALREADY done, according to the log. In the output, all the files are empty or almost.
+I want to use this command: sacct -j 6200096 --format=jobid,jobname,partition,ReqMem,maxrss,ntasks,alloccpus,elapsed,state,exitcode
+when some map jobs will be completed, to see how much memory is needed. it was around 11.3GB last time I looked it up thanks to david. 
+the 85th job (A5618-1) also finished early (within 2 minutes of running time).
+When it's done, I check the outputs and launch count on it.
+It's been an hour and all the map jobs are running, all on "nXX" nodes (XX being a number).
+the most advanced map jobs are now at 2:13 hours of running time. the output seem to be correctly going in separated folders:
+
+(base) [ebordron@login02 squire_map]$ ls
+114-1-1  174-1  221-1-1  37-1    56-1  A0008-1  A0682-1                               A1275-1  A1714-1  A2645-1  A5618-1    KR169-1-1  KZ123-2-1  KZ231-1-1  KZ87-2-1
+116-2-1  202-1  224-1    38-1    57-1  A0014-1  A0882-1                               A1314-1  A1721-1  A3024-1  A5620-1    KR170-4-1  KZ124-1-1  KZ232-1-1  UZ10-1-1
+118-1    203-1  225-1    40-1-1  61-1  A0074-1  A1267-1_1.fastqAligned.out.bam        A1319-1  A1792-1  A3509-1  A5790-1    KR176-1-1  KZ125-1-1  KZ236-1-1  UZ11-5-1
+119-1    204-1  226-1    43-1    62-1  A0110-1  A1267-1_1.fastqChimeric.out.junction  A1333-1  A2067-1  A3517-1  A5810-1    KR181-2-1  KZ127-1-1  KZ247-1-1  UZ9-1-1
+120-1    206-1  228-1    48-1    69-1  A0157-1  A1267-1_1.fastqLog.out                A1352-1  A2137-1  A3522-1  A5928-1    KR84-1-1   KZ137-1-1  KZ259-1-1
+131-1    207-1  232-1    51-1    70-1  A0217-1  A1267-1_1.fastqLog.progress.out       A1458-1  A2204-1  A4082-1  CH123-1    KR91-1-1   KZ150-8-1  KZ261-1-1
+133-1    211-1  29-1     52-1    81-1  A0544-1  A1267-1_1.fastq_STARgenome            A1600-1  A2313-1  A5406-1  CH128-1    KZ101-1-1  KZ159-1-1  KZ264-1-1
+134-1    217-1  30-1     53-1    85-1  A0654-1  A1267-1_1.fastq_STARpass1             A1601-1  A2314-1  A5614-1  CH264-4-1  KZ113-2-1  KZ165-1-1  KZ74-5-1
+159-1    218-1  35-1     55-1    86-1  A0665-1  A1267-1_1.fastq_STARtmp               A1690-1  A2351-1  A5615-1  CH320-5-1  KZ114-1-1  KZ167-1-1  KZ82-1-1
+
+...Excepted for A1267, apparently. there are all of the 124 samples here.
+12:07 : I'm starting to have some map jobs finished after 2:35 hours running.
+12:37 : more jobs finished, max is 3:08 .
+So far, the max memory used is 11.4 GB. I'll put the limit at 13GB, just to be sure.
+
+the jobs that finished seem to all have this error at the end:
+/scratch/qtbui_TE/analysis/squire/scripts_squire/squire_star.sh: line 53: ity: command not found
+I looked in squire_star.sh, this occurs when the command squire map is called. But I don't understand why .
+
+Since I gave map a 5-hours time limit, half the jobs ended prematurely... Why did I do that?
+here are the array numbers of the aborted jobs:
+2,3,4,5,6,7,8,9,11,14,15,18,19,21,22,24,25,26,27,28,29,30,31,32,33,34,35,36,37,40,42,46,47,48,49,50,52,53,54,55,56,58,60,61,62,63,65,67,68,70,71,73,75,76,77,78,79,80,81,83,84,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,103,104,105,106,107,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124
+I'll launch map right now with this as array index.
+Afterwards I'll check count, which just finished.
+map is launched. After 2 minutes, the job 3 (118-1) is done. Now I check count.
+I had only launched count for the samples of array number 32 (48-1) and 49 (A0110-1); they seem to have run great, seeing the logs. Both of them outputted 5 files, which are not empty. I'll launch call on it.
+First I'll see Raquel's script about call.
+Ok, I copied Raquel's scripts for call (two scripts) and copied my count_arguments.sh in call_arguments.sh ; but maybe we can give the same file to both once we know the pipeline works.
+For the time being I'll use call on 2 folders: the 32 (Resistance-ind) and the 49 (Cultivated). The result will make no sense but it's to see if it works.
+I removed the "tmp" folder and the "tmp" file that was in /scratch/qtbui_TE/analysis/squire/squire_count/114-1-1 . I could use this one and the 116 sample too, which correspond to 1 and 2 respectively in array numbers.so we have:
+1; 114-1-1; Resistance-cons
+2; 116-1-1;	Resistance-cons
+32; 48-1; Resistance-ind
+49; A0110-1; Cultivated
+
+I'd rather try on 1 and 32 
+or 2 and 32.
+let's try 1 and 32 first. I'll modify call_arguments.sh with their basenames.
+
+See error log of call to keep going.
+
+@@@@@@@@@@@@@@@@ 16/07 @@@@@@@@@@@@@@@@
+8:46 
+I continue the debugging of call.
+09:08
+I put prints and launched call. I should also check map output. According to the e-mails, all of them ended correctly.
+
+mapping: in the output, the folder for the A1267 sample doesn't appear. instead, the files that are normally outputted appear in the global folder (/scratch/qtbui_TE/analysis/squire/squire_map/output/squire_map), and have an additional suffix "fastq":
+(base) [ebordron@login02 squire_map]$ ll -a | grep 267
+-rw-r--r--   1 ebordron inra 2360849549 15 juil. 12:19 A1267-1_1.fastq.bam
+-rw-r--r--   1 ebordron inra     420448 15 juil. 12:22 A1267-1_1.fastq.bam.bai
+-rw-r--r--   1 ebordron inra          0 15 juil. 10:33 A1267-1_1.fastqChimeric.out.junction
+-rw-r--r--   1 ebordron inra       2035 15 juil. 11:52 A1267-1_1.fastq.log
+-rw-r--r--   1 ebordron inra    5051643 15 juil. 11:52 A1267-1_1.fastqSJ.out.tab
+drwx--S---   2 ebordron inra       4096 15 juil. 09:34 A1267-1_1.fastq_STARgenome
+drwx--S---   2 ebordron inra       4096 15 juil. 10:32 A1267-1_1.fastq_STARpass1
+
+Also they seem to not be empty. the last 2 are folders.
+MOREOVER, some samples (134-1 , 120-1 , 119-1 , 70-1 , A2313-1) have this problem too, BUT they also have the regular folder with their name and the good data.:q!
+
+I'll check the logs for A1267. and the inputALL_ARRAY.txt. A1267 IS in this file.
+Also the log for A1267 is the 57th.
+in the log it seems that there was an error; the basename was empty.
+
+
+
+log for sample 70-1 is 42 : same problem. what happened? this might be linked with the fact that I relaunched mapping I guess.
+also, while most samples outputs vary in size between 4GB and 1 GB, three of them are of a much smaller size (28MB):
+
+
+3	28M	118-1
+39	28M	61-1
+85	28M	A5618-1
+
+I also indicated their array number as I will restart map for 39 and 85 as right now, count is running on 3's map output.
+
+Anyway, since the output seem correct, I'll just move the files in the respective folders.
+Done. I'll launch count on the samples 3-10. we will have: 
+3	118-1	Resistance-cons	
+4	119-1	Resistance-cons
+5	120-1	Sensible
+6	131-1	Resistance-cons
+7	133-1	Sensible
+8	134-1	Sensible
+9	159-1	Resistance-cons
+10	174-1	Resistance-cons
+
+
+meanwhile I keep debugging call. I think it needs the full path.
