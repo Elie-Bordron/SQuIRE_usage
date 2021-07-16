@@ -19,13 +19,15 @@ List of important paths (given in the script already, no changes to do):
 
 Command to run:
 ```
-sbatch /scratch/qtbui_TE/analysis/squire/scripts_squire/old_run_count.sh /scratch/qtbui_TE/analysis/squire/scripts_squire/arguments.sh 
+sbatch /scratch/qtbui_TE/analysis/squire/scripts_squire/run_mapping.sh
 ```
+It seems that forgetting to activate squire before using this command doesn't do any harm, but I recommend you to do it anyway, I forgot it way too much.
+
 ## Ouput
 
 If you ran squire Map for all the samples, check that you have all these folders when you type this command:
 ```
-(squire) [ebordron@login02 squire_map]$ ls /scratch/qtbui_TE/analysis/squire/squire_map/output/squire_map
+ls /scratch/qtbui_TE/analysis/squire/squire_map/output/squire_map
 
 114-1-1  134-1  207-1    226-1  38-1    55-1  81-1     A0157-1  A1267-1  A1600-1  A2137-1  A3509-1  A5618-1  CH264-4-1  KR91-1-1   KZ127-1-1  KZ232-1-1  KZ82-1-1
 116-2-1  159-1  211-1    228-1  40-1-1  56-1  85-1     A0217-1  A1275-1  A1601-1  A2204-1  A3517-1  A5620-1  CH320-5-1  KZ101-1-1  KZ137-1-1  KZ236-1-1  KZ87-2-1
@@ -38,7 +40,7 @@ If you ran squire Map for all the samples, check that you have all these folders
 
 In each of these folders, you should find 5 files and 2 folders (I see what's in the KZ123-2-1 folder here):
 ```
-(squire) [ebordron@login02 KZ123-2-1]$ ll /scratch/qtbui_TE/analysis/squire/squire_map/output/squire_map/KZ123-2-1
+ll /scratch/qtbui_TE/analysis/squire/squire_map/output/squire_map/KZ123-2-1
 
 -rw-r--r-- 1 ebordron inra 3189340844 15 juil. 19:42 KZ123-2-1.bam
 -rw-r--r-- 1 ebordron inra     456096 15 juil. 19:46 KZ123-2-1.bam.bai
