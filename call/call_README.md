@@ -61,23 +61,32 @@ chr4	9243754	9244111	chr4|9243829|9244036|mp37948-1_chr4_RIX-incomp_reswagMde-B-
 ```
 
 - count_graph_all.pdf
-<center><img src="https://github.com/Elie-Bordron/SQuIRE_usage/blob/main/call/call_images/count_graph_all-1.png" alt="count_graph_all.pdf" width="500"/></center>
+<div>
+	<img class="marginauto" src="https://github.com/Elie-Bordron/SQuIRE_usage/blob/main/call/call_images/count_graph_all-1.png" alt="count_graph_all.pdf" width="500"/>
+</div>
 
 - MA_plot_all.pdf
-<center><img src="https://github.com/Elie-Bordron/SQuIRE_usage/blob/main/call/call_images/MA_plot_all-1.png" alt="MA_plot_all.pdf" width="500"/></center>
+<img src="https://github.com/Elie-Bordron/SQuIRE_usage/blob/main/call/call_images/MA_plot_all-1.png" alt="MA_plot_all.pdf" width="500"/>
 
 
 - MA_plot_RefSeq_only.pdf
-<center><img src="https://github.com/Elie-Bordron/SQuIRE_usage/blob/main/call/call_images/MA_plot_RefSeq_only-1.png" alt="MA_plot_RefSeq_only.pdf" width="500"/></center>
+<img src="https://github.com/Elie-Bordron/SQuIRE_usage/blob/main/call/call_images/MA_plot_RefSeq_only-1.png" alt="MA_plot_RefSeq_only.pdf" width="500"/>
 
 
 - MA_plot_TE_only.pdf
-<center><img src="https://github.com/Elie-Bordron/SQuIRE_usage/blob/main/call/call_images/MA_plot_TE_only-1.png" alt="MA_plot_TE_only.pdf" width="500"/></center>
+<img src="https://github.com/Elie-Bordron/SQuIRE_usage/blob/main/call/call_images/MA_plot_TE_only-1.png" alt="MA_plot_TE_only.pdf" width="500"/>
 
 ## Error logs
 The log folder is /scratch/qtbui_TE/analysis/squire/squire_clean/clean_on_our_data/error_log
 
 
 
-edit 16:29
+edit 17:51
+
+<style>
+.marginauto {
+    margin: 10px auto 20px;
+    display: block;
+}
+</style>
 
