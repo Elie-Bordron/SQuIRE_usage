@@ -77,3 +77,5 @@ The log folder is /scratch/qtbui_TE/analysis/squire/squire_clean/clean_on_our_da
 
 
 
+edit 16:11
+
