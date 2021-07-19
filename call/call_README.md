@@ -65,9 +65,10 @@ chr4	9243754	9244111	chr4|9243829|9244036|mp37948-1_chr4_RIX-incomp_reswagMde-B-
 
 - MA_plot_all.pdf
 ![MA_plot_all.pdf](https://github.com/Elie-Bordron/SQuIRE_usage/blob/main/call/call_images/MA_plot_all-1.png "This is a png. To see the pdf, go to the call_images folder")
+<img src="MA_plot_all.pdf" alt="bonjour" width="20"/>
 
 - MA_plot_RefSeq_only.pdf
-<img src="https://github.com/Elie-Bordron/SQuIRE_usage/blob/main/call/call_images/MA_plot_RefSeq_only.png" alt="MA_plot_RefSeq_only.pdf" width="20"/>
+<img src="MA_plot_all.pdf" alt="MA_plot_RefSeq_only.pdf" width="20"/>
 
 - MA_plot_TE_only.pdf
 <img src="https://github.com/Elie-Bordron/SQuIRE_usage/blob/main/call/call_images/MA_plot_TE_only.png" alt="MA_plot_TE_only.pdf" width="20"/>
