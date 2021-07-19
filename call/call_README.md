@@ -66,6 +66,8 @@ chr4	9243754	9244111	chr4|9243829|9244036|mp37948-1_chr4_RIX-incomp_reswagMde-B-
 - MA_plot_all.pdf
 [alt text](https://github.com/Elie-Bordron/SQuIRE_usage/blob/main/call/call_images/MA_plot_all-1.png)
 
+![MA_plot_all.pdf](https://github.com/Elie-Bordron/SQuIRE_usage/blob/main/call/call_images/MA_plot_all-1.png "go to call_images to see the pdf.")
+
 - 
 ```
 ```
