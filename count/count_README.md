@@ -3,7 +3,7 @@
 ## Prerequisites
 
 - The script run_count.sh must be filled. It can be used in its present state, but if you need to use it on different data, edit these fields:
-	- ```SBATCH -t 1-12:00:00```
+	- ```SBATCH -t 1-12:00:00``` \n
 		Counting ran correctly with this time limit, but adjust this to your data.
 	- ```SBATCH --mem=13GB```
 		Counting ran correctly with this memory limit, but adjust this to your data.
