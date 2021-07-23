@@ -122,7 +122,6 @@ chr1|42374112|42377431|mp132651-1_chr1_DHX-incomp_reswagMde-B-R3105-Map11_revers
 <img src="https://github.com/Elie-Bordron/SQuIRE_usage/blob/main/call/call_images/MA_plot_TE_only-1.png" alt="MA_plot_TE_only.pdf" width="500"/>
 
 
-
-
 ## Error logs
-The log folder is /scratch/qtbui_TE/analysis/squire/squire_call/logs
+The log folder is:
+```/scratch/qtbui_TE/analysis/squire/squire_call/logs```

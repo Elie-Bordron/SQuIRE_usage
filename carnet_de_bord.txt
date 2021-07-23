@@ -1067,7 +1067,7 @@ I launch count on it; 119 , 120 and 134 don't have a count folder already. I gue
 count is running.
 
 Note: some count outputs contain tmp files; it might cause errors. re-running count on them could be needed to ensure the pipeline flows correctly.
-here are the samples concerned:
+here are the 113 samples concerned:
 tree /scratch/qtbui_TE/analysis/squire/squire_count/input_for_call/conditions | grep tmp -i | cut -c 9-13 | sort -u
 118-1
 202-1
@@ -1185,3 +1185,140 @@ UZ9-1
 
 Count finished for the three samples after 58 minutes.the logs don't show errors. The output is normal, there is no weird file.
 I transfer them to their respective conditions folders.
+
+I remove the files for all the samples above, and I will launch count on it again. For map, all the files seem to be good. I made a file that tells which array number corresponds to which sample: /scratch/qtbui_TE/analysis/squire/squire_map/output/basenames.txt. I paste its content here:
+1	114-1
+2	116-2
+3	118-1
+4	119-1
+5	120-1
+6	131-1
+7	133-1
+8	134-1
+9	159-1
+10	174-1
+11	202-1
+12	203-1
+13	204-1
+14	206-1
+15	207-1
+16	211-1
+17	217-1
+18	218-1
+19	221-1
+20	224-1
+21	225-1
+22	226-1
+23	228-1
+24	232-1
+25	29-1_
+26	30-1_
+27	35-1_
+28	37-1_
+29	38-1_
+30	40-1-
+31	43-1_
+32	48-1_
+33	51-1_
+34	52-1_
+35	53-1_
+36	55-1_
+37	56-1_
+38	57-1_
+39	61-1_
+40	62-1_
+41	69-1_
+42	70-1_
+43	81-1_
+44	85-1_
+45	86-1_
+46	A0008
+47	A0014
+48	A0074
+49	A0110
+50	A0157
+51	A0217
+52	A0544
+53	A0654
+54	A0665
+55	A0682
+56	A0882
+57	A1267
+58	A1275
+59	A1314
+60	A1319
+61	A1333
+62	A1352
+63	A1458
+64	A1600
+65	A1601
+66	A1690
+67	A1714
+68	A1721
+69	A1792
+70	A2067
+71	A2137
+72	A2204
+73	A2313
+74	A2314
+75	A2351
+76	A2645
+77	A3024
+78	A3509
+79	A3517
+80	A3522
+81	A4082
+82	A5406
+83	A5614
+84	A5615
+85	A5618
+86	A5620
+87	A5790
+88	A5810
+89	A5928
+90	CH123
+91	CH128
+92	CH264
+93	CH320
+94	KR169
+95	KR170
+96	KR176
+97	KR181
+98	KR84-
+99	KR91-
+100	KZ101
+101	KZ113
+102	KZ114
+103	KZ123
+104	KZ124
+105	KZ125
+106	KZ127
+107	KZ137
+108	KZ150
+109	KZ159
+110	KZ165
+111	KZ167
+112	KZ231
+113	KZ232
+114	KZ236
+115	KZ247
+116	KZ259
+117	KZ261
+118	KZ264
+119	KZ74-
+120	KZ82-
+121	KZ87-
+122	UZ10-
+123	UZ11-
+124	UZ9-1
+
+I used a script to obtain the comma-separated list of 113 slurm indexes:  3,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124
+I'll launch count on it.
+count is running.
+samples 3,19,24,82,83
+failed. 3 had wrong map output
+19,24,82,83 had no basename.
+The solution to this problem (I have faced it earlier) is to relaunch count on these samples.
+I modified run_count.sh to run on them and launched it with different log names.
+Of course, 3 stopped. I relaunch map for it.
+After 32 minutes, some count jobs started to complete.
