@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-- The script run_count.sh must be filled. It can be used in its present state, but if you need to use it on different data, edit these fields:
+- The script run_count.sh must be filled. It can be used in its present state, but if you need to use squire on different data, edit these fields:
 	- ```SBATCH -t 1-12:00:00``` \
 		Counting ran correctly with this time limit, but adjust this to your data.
 	- ```SBATCH --mem=13GB```\
@@ -16,31 +16,33 @@
 	- ```path_scripts="/scratch/qtbui_TE/analysis/squire/scripts_squire"```\
 		This variable stores the path to the scripts folder that contains run_count.sh, loop_count.sh and count_arguments.sh
 	- ```loop_script="$path_scripts/loop_count.sh"```\
-		This variable stores the path to the script loop_count.sh
+		This variable stores the path to the script loop_count.sh.
+
 	This is pretty much everything you need to modify in this script when running squire on different data. For the rest of SLURM options, set them to fit your needs.
-- The script count_arguments.sh must be filled. It can be used in its present state, but if you need to use it on different data, edit these fields:
+
+- The script count_arguments.sh must be filled. It can be used in its present state, but if you need to use squire on different data, edit these fields:
 	- ```strandedness=1```\
 		Adjust this to your data. See Count step in SQuIRE github: '0' if unstranded eg Standard Illumina, 1 if first- strand eg Illumina Truseq, dUTP, NSR, NNSR, 2 if second-strand, eg Ligation, Standard SOLiD (optional,default=0)
 	- ```read_length=150```\
 		Adjust this to your data.
-	- ```fetch_folder=/scratch/qtbui_TE/analysis/squire/squire_fetch```
+	- ```fetch_folder=/scratch/qtbui_TE/analysis/squire/squire_fetch```\
 		Path to the fetch output folder. Make sure that it contains the following files. You may run squire fetch for this, or just provide your own files:
 	    - Marouch_genome.fasta
 	    - Marouch_refGene.gtf
 	    - Marouch_rmsk.txt (the custom-made repeatmasker file. make sure that the columns are the same as in a repeatmasker file.)
 	    - Marouch_TE.gff
 	    - Marouch_STAR (a directory)
-	- ```clean_folder=/scratch/qtbui_TE/analysis/squire/squire_clean```
+	- ```clean_folder=/scratch/qtbui_TE/analysis/squire/squire_clean```\
 		Path to the clean output folder. You need to run squire clean beforehand. Make sure that it contains the following files:
 		- table_col_0.txt_all.bed
 		- table_col_0.txt_all_copies.txt
-	- ```map_folder=/scratch/qtbui_TE/analysis/squire/squire_map/output/squire_map```
+	- ```map_folder=/scratch/qtbui_TE/analysis/squire/squire_map/output/squire_map```\
 		Path to the map output folder. You need to run squire map beforehand. Check the files using map_README.md.
-	- ```count_folder=/scratch/qtbui_TE/analysis/squire/squire_count/output```
-		Path to the count output folder: Where the output will be sent. By default, one folder per sample will be generated, but you can send all the output files in the same directory by editing the count command in loop_count.sh. To do this, edit this:
+	- ```count_folder=/scratch/qtbui_TE/analysis/squire/squire_count/output```\
+		Path to the count output folder: Where the output will be sent. By default, one folder per sample will be generated, but you can send all the output files in the same directory by editing the count command in loop_count.sh. To do this, edit this:\
 		```squire Count --f $fetch_folder --map_folder $map_folder/$basename --clean_folder $clean_folder --count_folder $count_folder/$basename --temp_folder $TMPDIR --name $basename --strandedness $strandedness --EM $EM $verbosity -r $read_length --pthreads $pthreads```\
 		into this:
-		```squire Count --f $fetch_folder --map_folder $map_folder/$basename --clean_folder $clean_folder --count_folder $count_folder --temp_folder $TMPDIR --name $basename --strandedness $strandedness --EM $EM $verbosity -r $read_length --pthreads $pthreads```
+		```squire Count --f $fetch_folder --map_folder $map_folder/$basename --clean_folder $clean_folder --count_folder $count_folder --temp_folder $TMPDIR --name $basename --strandedness $strandedness --EM $EM $verbosity -r $read_length --pthreads $pthreads```\
 
 
 
