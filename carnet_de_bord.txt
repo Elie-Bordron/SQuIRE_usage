@@ -1062,8 +1062,126 @@ information importante: J'ai commenté la ligne 214 de Call.py : os.unlink(r_scr
 
 Map is done for theses samples. the logs don't show errors. The output is normal, there is no weird file.
 
-I transfer the count output of the samples "70" and "A2313" to their respectives condition folders, as I did not did that earlier.
+I transfer the count output of the samples "70" and "A2313" to their respective condition folders, as I did not did that earlier.
 I launch count on it; 119 , 120 and 134 don't have a count folder already. I guess I forgot that I removed them.
 count is running.
 
 Note: some count outputs contain tmp files; it might cause errors. re-running count on them could be needed to ensure the pipeline flows correctly.
+here are the samples concerned:
+tree /scratch/qtbui_TE/analysis/squire/squire_count/input_for_call/conditions | grep tmp -i | cut -c 9-13 | sort -u
+118-1
+202-1
+203-1
+204-1
+206-1
+207-1
+211-1
+217-1
+218-1
+221-1
+224-1
+225-1
+226-1
+228-1
+232-1
+29-1_
+30-1_
+35-1_
+37-1_
+38-1_
+40-1-
+43-1_
+48-1_
+51-1_
+52-1_
+53-1_
+55-1_
+56-1_
+57-1_
+61-1_
+62-1_
+69-1_
+81-1_
+85-1_
+86-1_
+A0008
+A0014
+A0074
+A0110
+A0157
+A0217
+A0544
+A0654
+A0665
+A0682
+A0882
+A1267
+A1275
+A1314
+A1319
+A1333
+A1352
+A1458
+A1600
+A1601
+A1690
+A1714
+A1721
+A1792
+A2067
+A2137
+A2204
+A2314
+A2351
+A2645
+A3024
+A3509
+A3517
+A3522
+A4082
+A5406
+A5614
+A5615
+A5618
+A5620
+A5790
+A5810
+A5928
+CH123
+CH128
+CH264
+CH320
+KR169
+KR170
+KR176
+KR181
+KR84-
+KR91-
+KZ101
+KZ113
+KZ114
+KZ123
+KZ124
+KZ125
+KZ127
+KZ137
+KZ150
+KZ159
+KZ165
+KZ167
+KZ231
+KZ232
+KZ236
+KZ247
+KZ259
+KZ261
+KZ264
+KZ74-
+KZ82-
+KZ87-
+UZ10-
+UZ11-
+UZ9-1
+
+Count finished for the three samples after 58 minutes.the logs don't show errors. The output is normal, there is no weird file.
+I transfer them to their respective conditions folders.
