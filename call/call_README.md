@@ -2,7 +2,7 @@
 
 ## Input
 
-- The results of Count step. They can be found in the count output folder. Specify this folder's path in call_arguments.sh .
+- The results of Count step. They can be found in the count output folder. This folder's path is specified in call_arguments.sh .
 - Specifications about the two groups compared:
     - The name of the groups
     - The repartition of samples within the two groups.

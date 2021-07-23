@@ -30,7 +30,7 @@ résultat (les 10 premières lignes du fichier /scratch/qtbui_TE/analysis/squire
 
 Le fichier de raquel (filename_rmsk.txt) ressemble à ça, il est donc normal. La question est maintenant pourquoi ce format ne correspond pas à celui décrit sur le site de repeatmasker à http://www.repeatmasker.org/webrepeatmaskerhelp.html
 Le site semble parler du fichier d'annotation (.out). J'essaie de le trouver dans ce que j'ai téléchargé avec cette commande.
-Il semble que j'ai seulement téléchargé le fichier rmsk.txt . 
+Il semble que j'ai seulement téléchargé le fichier rmsk.txt .
 
 Je relance le script avec les options SBATCH suivantes:
 #SBATCH -- job-name="dl_hg38"
@@ -44,7 +44,7 @@ Je relance le script avec les options SBATCH suivantes:
 #SBATCH --export=ALL
 #SBATCH -M email.com@email.com
 
-et avec les options suivantes: 
+et avec les options suivantes:
 squire Fetch -b hg38 -g -v
 on enlève -r car on a déjà le fichier rmsk.txt; on met -g pour avoir l'UCSC gene annotation. I hope it is the .out file.
 #23/06/21 edit:
@@ -52,7 +52,7 @@ it outputs hg38_refGene.bed ; hg38_refGene.genepred ; and hg38_refGene.gtf files
 
 23/06/21
 Yesterday, quynh told me to modify our bed file to make a rmsk.txt. so I need to get rid of certain columns and put the good ones at the good emplacement.
-In order to do this, I need to konw what to put in the third column. so let's use squire clean on the human genome downloaded yesterday with squire fetch; maybe I'll be able to see what is the third columns. 
+In order to do this, I need to konw what to put in the third column. so let's use squire clean on the human genome downloaded yesterday with squire fetch; maybe I'll be able to see what is the third columns.
 On a sidenote, I could also dive in Fetch.py to see if squire gets first the repeatmasker file as a .out (which structure is known), then re-arranges it to make a rmsk.txt file. I could even just see if the UCSC genome is a .out
 
 There is a file named Marouch_TE.bed in /scratch/qtbui_TE/analysis/squire/squire_clean . It is our file given by Quynh that we placed here for squire to use it.
@@ -87,7 +87,7 @@ I will launch it again with these parameters:
 #SBATCH --array=1-124           # we have 124 samples
 I did it at 15:13 .
 
-résumé du pipeline: 
+résumé du pipeline:
 squire fetch produit un rmsk.txt. squire clean prend ce fichier pour créer un .bed.
 je dois donc regarder ce qui se trouve dans le rmsk.txt pour savoir quel fichier je dois donner en entrée.
 lancer clean sur le rmsk.txt du génome humain produit un bed, mais ça ne m'aide pas forcément... je vais comparer les 2 quand meme pour voir.
@@ -97,7 +97,7 @@ donc dans les tâches j'ai:
 
 **********************************************************
 -LANCER CLEAN SUR RMSK SANS COL3
-	REGARDER LES RÉSULTATS DU MAPPING QUI A TOURNÉ HIER EN GENRE 30 MIN MAIS A MIS DU TEMPS À SE LANCER: REGARDER .BEDS ET .LOGS 
+	REGARDER LES RÉSULTATS DU MAPPING QUI A TOURNÉ HIER EN GENRE 30 MIN MAIS A MIS DU TEMPS À SE LANCER: REGARDER .BEDS ET .LOGS
 	REGARDER LES RÉSULTATS DE CE CLEAN ET COMPARER CE BED AVEC L'ANCIEN BED.
 -	FAIRE UN GITHUB NON PLUTÔT MODIFIER MON GITHUB POUR FAIRE UN REPO SQUIRE DESSUS ET Y METTRE MON README. COMPLÉTER LE README.
 **********************************************************
@@ -105,8 +105,8 @@ je les fais dans l'ordre.
 
 j'essaie de faire marcher sed (voir https://www.theunixschool.com/2013/02/sed-examples-replace-delete-print-lines-csv-files.html)
 
-sed 's/\(Ubuntu\)\(,.*,\).*/\1\299/' input_sed_test.txt > output_sed_test.txt  
-input: 
+sed 's/\(Ubuntu\)\(,.*,\).*/\1\299/' input_sed_test.txt > output_sed_test.txt
+input:
 Solaris,Ubuntu,11
 Ubuntu,21,2
 Fedora,21,3
@@ -121,7 +121,7 @@ LinuxMint,45,4
 RedHat,12,5
 
 
-sed 's/\(Ubuntu\)\(,.*,\).*/\2\299/' input_sed_test.txt > output_sed_test.txt  
+sed 's/\(Ubuntu\)\(,.*,\).*/\2\299/' input_sed_test.txt > output_sed_test.txt
 input est le même.
 output:
 Solaris,Ubuntu,11
@@ -131,13 +131,13 @@ LinuxMint,45,4
 RedHat,12,5
 
 
-sed 's/\(Ubuntu\)\(,.*,\).*/\3\299/' input_sed_test.txt > output_sed_test.txt  
+sed 's/\(Ubuntu\)\(,.*,\).*/\3\299/' input_sed_test.txt > output_sed_test.txt
 input est le même.
 output:
 sed: -e expression #1, char 30: invalid reference \3 on `s' command's RHS
 
 
-sed 's/\(Ubuntu\)\(,.*,\).*/\1\199/' input_sed_test.txt > output_sed_test.txt  
+sed 's/\(Ubuntu\)\(,.*,\).*/\1\199/' input_sed_test.txt > output_sed_test.txt
 output:
 Solaris,Ubuntu,11
 UbuntuUbuntu99
@@ -145,7 +145,7 @@ Fedora,21,3
 LinuxMint,45,4
 RedHat,12,5
 
-nvm, actually this is better: 
+nvm, actually this is better:
 awk -F, '{print $1"/"$3":"$2}' < input.txt > output.txt 		# -F is the separator.
 
 I have to do:
@@ -155,10 +155,10 @@ I have to do:
 	-How and Why it is of interest.
 I think I would benefit from giving a first try to Quynh and Marie at the end of next week, So that they could point me in the right direction. This is what we agreed on (but if I am unable to do it, it's okay).
 **********************************************************
-16:16 : 
+16:16 :
 Bad news for the mapping that completed quick : the output and log folders are empty of this job. My guess is that I had modified these folders during / before launching this job, rending the job unable to finish correctly. There must be a log of this somewhere.
 For now, I corrected the paths in reun_mapping.sh and will launch it back right now. 4 days, 500Gb
-launched 16:25 . 
+launched 16:25 .
 Also I just launched the removing of the third column of the true rmsk.txt file. It was done within a minute.
 16:35 : I now have launched clean with the rmsk missing the third column. It was 3 minutes long last time I did it on the hg38 complete genome.
 It finished after 5 minutes. Let's compare the .beds now.
@@ -166,13 +166,13 @@ So the normal bed seems to have 1 more line than the modified one. what about th
 
 1ere col: locus
 2: ordre
-3: 
+3:
 
 
-25/06 : 
-quynh sent me the table that we can use as a repeatmasker file. I will use clean on it. 
+25/06 :
+quynh sent me the table that we can use as a repeatmasker file. I will use clean on it.
 Meanwhile, The job that I started yesterday is now running and was completed for some samples (took 12h for some). the log for these jobs doesn't seem to show errors.
-Clean has been launched, waiting for it to start. 
+Clean has been launched, waiting for it to start.
 I eventually aborted the mapping as it was taking up too much time for the clean job to complete. the cleaning is now done.
 I will compare this clean's output to the output given by clean on the human genome. Let's go!
 **********************************************************
@@ -181,7 +181,7 @@ I will compare this clean's output to the output given by clean on the human gen
 -launch again the mapping job before the week-end
 **********************************************************
 
-18:11 : 
+18:11 :
 run_mapping lancé de nouveau.
 #SBATCH --job-name="map_4j"
 ###SBATCH -e /scratch/qtbui_TE/analysis/squire/logs_run_map/err_map_4j%a.out
@@ -194,13 +194,13 @@ run_mapping lancé de nouveau.
 #SBATCH --mail-user=ebordron@etu.u-bordeaux.fr
 #SBATCH --array=1-124           # we have 124 samples
 
-I compared the results of the clean on the file with 0s on col 3 (the output is a .bed) that quynh gave me with the .bed (output of clean with human genome). 
+I compared the results of the clean on the file with 0s on col 3 (the output is a .bed) that quynh gave me with the .bed (output of clean with human genome).
 here's the head of the docs:
 
 ###### our data ######
 (base) [ebordron@login02 output]$ pwd
 /scratch/qtbui_TE/analysis/squire/clean_on_our_data/output
-(base) [ebordron@login02 output]$ head table_col_0.txt_all.bed 
+(base) [ebordron@login02 output]$ head table_col_0.txt_all.bed
 chr1	43849613	43849713	chr1|43849613|43849713|mp131073-1_chr1_DTX-incomp_reswagMde-B-R2276-Map20:DTX:TIR|0|+	0	+	43849613	43849713	120,91,12
 chr1	43728152	43728320	chr1|43728152|43728320|mp131074-1_chr1_DTX-incomp_reswagMde-B-R3621-Map9:DTX:TIR|0|-	0	-	43728152	43728320	94,137,255
 chr1	43822961	43823104	chr1|43822961|43823104|mp131075-1_chr1_DTX-incomp_reswagMde-B-R5137-Map13_reversed:DTX:TIR|0|+	0	+	43822961	43823104	120,91,12
@@ -215,7 +215,7 @@ chr1	43673605	43673665	chr1|43673605|43673665|mp131081-1_chr1_DXX-MITE_reswagMde
 ###### human genome ######
 (base) [ebordron@login02 clean_on_squires_rmsk]$ pwd
 /scratch/qtbui_TE/analysis/squire/clean_on_squires_rmsk
-(base) [ebordron@login02 clean_on_squires_rmsk]$ head normal_hg38_all.bed 
+(base) [ebordron@login02 clean_on_squires_rmsk]$ head normal_hg38_all.bed
 chr1	11504	11675	chr1|11504|11675|L1MC5a:L1:LINE|251|-	251	-	11504	11675	94,137,255
 chr1	11677	11780	chr1|11677|11780|MER5B:hAT-Charlie:DNA|294|-	294	-	11677	11780	94,137,255
 chr1	15264	15355	chr1|15264|15355|MIR3:MIR:SINE|230|-	230	-	15264	15355	94,137,255
@@ -233,24 +233,24 @@ changed a bit the output and log folders of run_mapping.sh . relaunched the job.
 
 I will later try to launch count with this.
 
-28/06 : 
+28/06 :
 11:03
 This morning, starting at 9:00, I participated to a meeting with Quynh, her colleagues and the head of the team. I need to continue the introduction.
 Right now:
--Mapping is done for some array jobs (~45). 
-Note: If a time limit is applied for a job that starts array jobs, The time limit applies individually for each array job. It means that the job itself can take weeks (hypothetically) to run, but each array job has to  the time limit. 
-The maximal running time for a mappiong array job was around 22:30; the upper time limit can be set to 1 day and 12 hours, or 2 days for a first run. 
+-Mapping is done for some array jobs (~45).
+Note: If a time limit is applied for a job that starts array jobs, The time limit applies individually for each array job. It means that the job itself can take weeks (hypothetically) to run, but each array job has to  the time limit.
+The maximal running time for a mappiong array job was around 22:30; the upper time limit can be set to 1 day and 12 hours, or 2 days for a first run.
 
 This week's global objective is :
 ╔═══════════════════════════════════╗
 |launch count and write introduction|
 ╚═══════════════════════════════════╝
-Today's objectives are: 
+Today's objectives are:
 -See if the mapping job fully completed. Did it end before some samples could be mapped?
 -launch count. write here what it needs. Launch it on the 45 samples that were mapped.
 
 **********************************************************
-In the future, I will have to modify the scripts for mapping. 
+In the future, I will have to modify the scripts for mapping.
 Right now, when a map array job finishes, the output goes in this folder: /scratch/qtbui_TE/analysis/squire/run_map/output_run_map/squire_map .
 The problem is that this applies to all of the map array jobs. This result in a messy folder containing dozens of files for all our samples.
 It would be better to do what Raquel did: when a map array job finishes, the output goes in a single folder created for this sample and named after it.
@@ -262,7 +262,7 @@ to launch count, I need (tabulate if completed):
 	1. to fill run_count.sh
 		Raquel does this: run_count.sh calls loop_count.sh and gives it arguments.sh as an argument; except that arguments.sh must be stored in the path containing the output of count. I will store arguments.sh with the other scripts instead.
 	2. to fill loop_count.sh
-	
+
 3. to fill arguments.sh
 
 Meanwhile, I did a script to automatically transfer the mapping results in individual folders, so I will use this for the count step. Now let's fill arguments.sh just as Raquel did.
@@ -308,7 +308,7 @@ I had left --build and --fetch_folder in loop_count.sh. I removed build as we do
 15:02
 Count.py shows an error:
   File "/gpfs/home/ebordron/SQuIRE/squire/Count.py", line 218, in filter_tx
-    gene_dict[(gtf_line.Gene_ID,gtf_line.strand)].add_counts(counts)  
+    gene_dict[(gtf_line.Gene_ID,gtf_line.strand)].add_counts(counts)
 KeyError: ('STRG.3', '+')
 16:56
 In Count.py, the error comes from the function filter_tx() that calls at line 1575. it reads the file $basename.gtf from the $count_folder given in argument. Put simply, when it reads the .gtf, there is a problem.
@@ -360,13 +360,13 @@ see cahier for more details.
 
 @@@@@@@@@@@@@@@@ 02/07 @@@@@@@@@@@@@@@@
 Caroline sent me the 10 first lines of her files for the output of clean, map and count.
-We saw yesterday that my refGene.gtf file (fetch output) was different (some columns switched), so let's see how we can change that. I'll first compare the files to establish in what state we are. 
+We saw yesterday that my refGene.gtf file (fetch output) was different (some columns switched), so let's see how we can change that. I'll first compare the files to establish in what state we are.
 I just struggled a bit while comparing clean's output, but let's see fetch's output. Indeed, Map uses fetch's output: refGene.gtf
 When fetch runs, it produces among other things a refGene.gtf file. As Quynh provided this file, we did not launch Fetch. However, the layout is different between our files. I shall correct this.
 Once the refGene.gtf will be fixed, I will be able to launch Map again. But let's check the other files produced by fetch before. Done. We use only a .gff (given by quynh), but fetch doesn't seem create one. for now I'll just modify the gtf OR the map python script. First I'll check if this script actually uses this gtf. That's the case. I'll see if I can modify this. The script just executes a STAR command and gives the .gtf in argument, not specifying the columns. I will modify the gtf rather than try to modify the STAR scripts, which I know nothing about.
 
 22:07
-I'm gonna modify the gtf and try to run the mapping over the week-end. 
+I'm gonna modify the gtf and try to run the mapping over the week-end.
 The gtf is good now, I have a backup if needed in /scratch/qtbui_TE/analysis/squire/squire_fetch/stock_Marouch_refGenegtf .
 I will move the old mapping results then run mapping on TWO samples first. if no error this evening I will execute it with the 124 samples.
 23:30
@@ -377,7 +377,7 @@ I must note that I modified Map.py on the 121st line to add fields that are pres
 
 I copied all the scripts existing at 15:35 in the x folder to the /gpfs/home/ebordron/tmp_ebordron/run_squire/Marouch_scripts_copy folder. old scripts are in /gpfs/home/ebordron/tmp_ebordron/run_squire/old .
 18:04
-I Started to edit arguments.sh in /home/waren/Desktop/stage/my_github/squire_usage/clean as I put "arguments.sh" In the "required files" section of the clean README.md . I will later move arguments.sh out of clean as it is meant to be used for all commands. 
+I Started to edit arguments.sh in /home/waren/Desktop/stage/my_github/squire_usage/clean as I put "arguments.sh" In the "required files" section of the clean README.md . I will later move arguments.sh out of clean as it is meant to be used for all commands.
 The idea is to have the file arguments.sh if the reader wants to see it, but I will specify what each command needs in their respective README's. For instance, Clean uses /scratch/qtbui_TE/analysis/squire/squire_clean/clean_on_our_data/input/table_col_0.txt , which path is given by arguments.sh , but I will specifiy thus path in clean's README so that the reader knows what element of arguments.sh is needed for each command.
 
 @@@@@@@@@@@@@@@@ 06/07 @@@@@@@@@@@@@@@@
@@ -432,7 +432,7 @@ Map's output after the columns of the refGene.gtf file have been swapped (with /
 	-rw-r--r-- 1 1707 1005 2,0K  5 juil. 21:57 Log.final.out
 	-rw-r--r-- 1 1707 1005 5,2M  5 juil. 21:57 SJ.out.tab
 
-Conlusion: there seem to be less files, I must see if there is still this difference after the mapping fully completes. 
+Conlusion: there seem to be less files, I must see if there is still this difference after the mapping fully completes.
 Also, the Chimeric.out.junction file is still empty.
 
 
@@ -445,24 +445,24 @@ I execute it (with sbatch and not bash)
 I realize I only ran /scratch/qtbui_TE/analysis/squire/squire_map/output_run_map/scripts_for_data_management/create_dirs.sh , which only creates the directories. This script can be run from anywhere, it will create one folder per sample in /scratch/qtbui_TE/analysis/squire/squire_map/output_run_map/map_output_for_count .
 transfer_files.sh fills these folders with the actual data from mapping for each sample; It can also be run from anywhere. Actually, at some point in transfer_files.sh , I do "mv input_folder/basename* output_folder/basename/" which means "create a folder called basename if it doesn't exist" so maybe create_dirs.sh  is actually useless. I don't think it's an important matter though.
 
-clean_folder : important information: 
+clean_folder : important information:
 the output of clean, in our case, should contain at least 2 files with this name structure: basename_all.bed  basename_all_copies.txt .
 
 count finished quick, the error seem different:
 There are 270 000 lines of "Warning: invalid GTF record, transcript_id not found:
 chr1	transdecoder	exon	20915842	20915869	.	-	.	gene_id	"PruarM.1G387700";	transcript_id	"PruarM.1G387700.t1.p1";
 ".
- I'll compare the refGene.gtf we give in argument with the same file for human genome = output of fetch. Done; the columns correspond perfectly: 
- 
+ I'll compare the refGene.gtf we give in argument with the same file for human genome = output of fetch. Done; the columns correspond perfectly:
+
  (base) [ebordron@login01 squire_fetch]$ ls
 human_data  logmarouch.out  our_data  test_col.sh
-(base) [ebordron@login01 squire_fetch]$ vim test_col.sh 
-(base) [ebordron@login01 squire_fetch]$ rm logmarouch.out 
-(base) [ebordron@login01 squire_fetch]$ vim test_col.sh 
-(base) [ebordron@login01 squire_fetch]$ bash test_col.sh 
+(base) [ebordron@login01 squire_fetch]$ vim test_col.sh
+(base) [ebordron@login01 squire_fetch]$ rm logmarouch.out
+(base) [ebordron@login01 squire_fetch]$ vim test_col.sh
+(base) [ebordron@login01 squire_fetch]$ bash test_col.sh
 (base) [ebordron@login01 squire_fetch]$ ls
 human_data  logmarouch.out  our_data  test_col.sh
-(base) [ebordron@login01 squire_fetch]$ cat logmarouch.out 
+(base) [ebordron@login01 squire_fetch]$ cat logmarouch.out
 chr1 a transdecoder z exon e 19904 r 20044 t . y + u . i gene_id o "PruarM.1G000100"; p transcript_id q "PruarM.1G000100.t1.p1";
 chr1 a transdecoder z exon e 20148 r 20257 t . y + u . i gene_id o "PruarM.1G000100"; p transcript_id q "PruarM.1G000100.t1.p1";
 chr1 a transdecoder z exon e 20365 r 20437 t . y + u . i gene_id o "PruarM.1G000100"; p transcript_id q "PruarM.1G000100.t1.p1";
@@ -473,12 +473,12 @@ chr1 a transdecoder z exon e 23633 r 23699 t . y + u . i gene_id o "PruarM.1G000
 chr1 a transdecoder z exon e 25537 r 25936 t . y + u . i gene_id o "PruarM.1G000100"; p transcript_id q "PruarM.1G000100.t1.p1";
 chr1 a transdecoder z exon e 27296 r 27443 t . y + u . i gene_id o "PruarM.1G000100"; p transcript_id q "PruarM.1G000100.t1.p1";
 chr1 a transdecoder z exon e 27567 r 27727 t . y + u . i gene_id o "PruarM.1G000100"; p transcript_id q "PruarM.1G000100.t1.p1";
-(base) [ebordron@login01 squire_fetch]$ 
-(base) [ebordron@login01 squire_fetch]$ vim test_col.sh 
-(base) [ebordron@login01 squire_fetch]$ bash test_col.sh 
+(base) [ebordron@login01 squire_fetch]$
+(base) [ebordron@login01 squire_fetch]$ vim test_col.sh
+(base) [ebordron@login01 squire_fetch]$ bash test_col.sh
 (base) [ebordron@login01 squire_fetch]$ ls
 human_data  loghuman.out  logmarouch.out  our_data  test_col.sh
-(base) [ebordron@login01 squire_fetch]$ cat loghuman.out 
+(base) [ebordron@login01 squire_fetch]$ cat loghuman.out
 chr1 a squire_fetch/hg38_refGene.genepred z exon e 11874 r 12227 t . y + u . i gene_id o "DDX11L1"; p transcript_id q "NR_046018";
 chr1 a squire_fetch/hg38_refGene.genepred z transcript e 11874 r 14409 t . y + u . i gene_id o "DDX11L1"; p transcript_id q "NR_046018";
 chr1 a squire_fetch/hg38_refGene.genepred z exon e 12613 r 12721 t . y + u . i gene_id o "DDX11L1"; p transcript_id q "NR_046018";
@@ -491,15 +491,15 @@ chr1 a squire_fetch/hg38_refGene.genepred z exon e 16607 r 16765 t . y - u . i g
 chr1 a squire_fetch/hg38_refGene.genepred z exon e 16858 r 17055 t . y - u . i gene_id o "WASH7P"; p transcript_id q "NR_024540";
 (base) [ebordron@login01 squire_fetch]$ pwd
 /scratch/qtbui_TE/analysis/squire/squire_fetch
-(base) [ebordron@login01 squire_fetch]$ 
+(base) [ebordron@login01 squire_fetch]$
 
 I separated the columns with azertyuiopq . I think the quotes might be causing the error. I'll see how the count.py script uses this field. Does it search a key for a dictionary? Regarding that, the script itself might not be using a specific column, actually it might give the whole file to an other command.
-There seemm to be a problem with the script 
+There seemm to be a problem with the script
 the error is: "Not a conda environment: /scratch/qtbui_TE/analysis/squire/scripts_squire/arguments.sh". it corresponds to the line 28 run_count.sh :
 "source $(conda info --base)/bin/activate"
 
 @@@@@@@@@@@@@@@@ 07/07 @@@@@@@@@@@@@@@@
-I tried to hardcode the path (coder en dur). I have this line: 
+I tried to hardcode the path (coder en dur). I have this line:
 "source /gpfs/home/ebordron/miniconda3/bin/activate"
 but the same error occurs. I also replaced "source" with "conda", the command doesn't work anymore.
 But I had not activated squire while doing so. I do it again now, squire is activated.
@@ -524,7 +524,7 @@ Launched it again after creating the folder test_map_conda. id is 6169538 .
 Eventually, the map job ended. conda launches well in it, I'll copy paste it. it's the next step.
 I did not copy anything but I restarted my ssh session by closing and opening the terminal; I modified some things in run_mapping.sh and argumetns.sh and now run_count.sh works. I don't know how I solved this.
 
-17:43 : 
+17:43 :
 I added clean's readme on the github. I need to focus on this, even though I'm stuck on a count problem. I'll keep working on the readme's and the introduction.
 I had two files named carnet de bord ; one in Desktop/stage and one in Desktop/stage/my_github/...
 I'll keep the github one. it is this one.
@@ -538,8 +538,8 @@ I checked out Count.py (in /gpfs/home/ebordron/SQuIRE/squire), and searched for 
 190:			elif self.attribute[0]=="gene_id":
 191:				self.Gene_ID=self.attribute[1]
 199:		self.attributes[0] = "gene_id" + " " + '"' + newgeneid + '"'
-221:						gene_dict[(gtf_line.Gene_ID,gtf_line.strand)].add_counts(counts)  
-222:						gene_dict[(gtf_line.Gene_ID,gtf_line.strand)].add_tx(gtf_line.transcript_id)                
+221:						gene_dict[(gtf_line.Gene_ID,gtf_line.strand)].add_counts(counts)
+222:						gene_dict[(gtf_line.Gene_ID,gtf_line.strand)].add_tx(gtf_line.transcript_id)
 225:				gene_dict[(ref_line.Gene_ID,ref_line.strand)].add_tx(gtf_line.transcript_id)
 233:		self.Gene_ID = line[0]
 245:		self.flagout=[self.Gene_ID,self.fpkm,self.counts]
@@ -553,17 +553,17 @@ I checked out Count.py (in /gpfs/home/ebordron/SQuIRE/squire), and searched for 
 (base) [ebordron@login01 squire]$ cat Count.py | grep transcript_id -in
 194:			elif self.attribute[0]== "transcript_id":
 195:				self.transcript_id=self.attribute[1]
-222:						gene_dict[(gtf_line.Gene_ID,gtf_line.strand)].add_tx(gtf_line.transcript_id)                
+222:						gene_dict[(gtf_line.Gene_ID,gtf_line.strand)].add_tx(gtf_line.transcript_id)
 225:				gene_dict[(ref_line.Gene_ID,ref_line.strand)].add_tx(gtf_line.transcript_id)
 
 in line 194, I can deactivate the count of transcript_id. first I add some prints ; I then execute count. the log file is /scratch/qtbui_TE/analysis/squire/squire_count/logs_run_count/count_modrefgene_modcountpy%a.out .
 the prints do not appear (they  are in the class gtfline(object) around line 187). I add prints around lines 226-229.
 Turns out I already have prints here. I'll split the log file in std and error.
 I don't see any of my prints. I'll add prints at the beginning of the py script. and in the main() function as well.
-So the program never continues the main() after this line: 
+So the program never continues the main() after this line:
 Stringtie(bamfile,outfolder,basename,strandedness,pthreads,ingtf, verbosity,outgtf_ref_temp)
 ...so the problem might be in the Stringtie() function.
-the problem occurs at the last line of Stringtie() : 
+the problem occurs at the last line of Stringtie() :
 sp.check_call(["/bin/sh", "-c", StringTiecommand])
 The question is , how can I make it NOT use transcript_id's?
 
@@ -573,7 +573,7 @@ Concrètement, le gene_id de Marouch_refGene.gtf ressemble à ça:  "PruarM.1G53
 Je me suis demandé à quoi correspondait le gene_id d'un .bam . J'ai utilisé un script python pour visualiser la première ligne du fichier /scratch/qtbui_TE/analysis/squire/squire_map/output_run_map/map_output_for_count/114-1-1/to_see_bam_content/114-1-1.bam, ça a donné ça :
 
  A00318:65:HYL3WDSXX:4:1402:31313:31422    163    0    19754    255    74M    0    19839    74    GAAAAAAAAAAAAGTAAACCAAACCCCCGGCCCCAACCCCCAAAAAAATGGTACCAAAAAACAAAAAAAAAATA    array('B', [37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 25, 25, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 11, 37, 37, 37, 37, 37, 37, 25, 25, 37, 37, 37, 37, 25, 25, 25, 37, 37, 37, 37, 25, 25, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 25, 37, 11, 37, 37, 37, 37, 37, 37, 37, 11, 11, 25])    [('NH', 1), ('HI', 0), ('AS', 212), ('nM', 5), ('NM', 5), ('MD', '1G68T0T0C0C0'), ('jM', array('b', [-1])), ('jI', array('i', [-1])), ('MC', '150M')]
- 
+
 En séparant les colonnes, on obtient quelque chose de plus lisible:
 
 Field 0 :A00318:65:HYL3WDSXX:4:1402:31313:31422
@@ -588,7 +588,7 @@ Field 8 :74
 Field 9 :GAAAAAAAAAAAAGTAAACCAAACCCCCGGCCCCAACCCCCAAAAAAATGGTACCAAAAAACAAAAAAAAAATA
 Field 10 :array('B', [37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 25, 25, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 11, 37, 37, 37, 37, 37, 37, 25, 25, 37, 37, 37, 37, 25, 25, 25, 37, 37, 37, 37, 25, 25, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 25, 37, 11, 37, 37, 37, 37, 37, 37, 37, 11, 11, 25])
 Field 11 :[('NH', 1), ('HI', 0), ('AS', 212), ('nM', 5), ('NM', 5), ('MD', '1G68T0T0C0C0'), ('jM', array('b', [-1])), ('jI', array('i', [-1])), ('MC', '150M')]
- 
+
 Bref, je pense que le gene_id est ('MD', '1G68T0T0C0C0'), mais 1G68T0T0C0C0 n'apparaît pas dans Marouch_refGene.gtf avec grep, ce qui est problématique parce qu'ils sont censés correspondre (si j'ai bien suivi?). je pense que je tiens un bout du problème, je vais continuer dessus mais pas tout de suite, cet après-midi je vais d'abord continuer le readme de map.
 
 I'll compare our gtf with Caroline's::
@@ -617,8 +617,8 @@ mv Marouch_3.1_braker214_PruarM.gtf Marouch_refGene.gtf
 If this step runs fine , we can delete the "old" folder easily.
 
 11:50
-in analysis/squire/squire_fetch : 
-there is a folder "our_data" and another one "human_data". Having test data and true data in the same directory is bad, so I'll change this. I don't need the human_data part anymore, so I'll just remove it, but in the future, I'll have to do this differently. 
+in analysis/squire/squire_fetch :
+there is a folder "our_data" and another one "human_data". Having test data and true data in the same directory is bad, so I'll change this. I don't need the human_data part anymore, so I'll just remove it, but in the future, I'll have to do this differently.
 In the same topic, having a folder "input" in squire_clean is bad, since it is supposed to take from input the rmsk.txt contained in squire_fetch. SO I moved the rmsk.txt in squire_fetch, I'll have to modify these paths in the script. I could also change run_map.sh so that it creates one folder per sample for the output.
 I did that and launched map for 2 samples. I'm gonna debug to have a correct output for map as described above.
 13:57
@@ -630,7 +630,7 @@ I debugged a little and it seems to be working. if these 2 samples work correctl
 
 
 @@@@@@@@@@@@@@@@ 13/07 @@@@@@@@@@@@@@@@
-I commented prints in Count.py that I had previously added in this script:  
+I commented prints in Count.py that I had previously added in this script:
 137:    print("Entering Stringtie()", file=sys.stderr)
 155:        print("+1", file=sys.stderr)
 166:    print("str(pthreads)::", str(pthreads), file=sys.stderr)
@@ -665,7 +665,7 @@ The mapping ran weirdly, there were files likes this: basename_fastq01.bam up to
 I ran it for all samples at 9:27. so far, no one uses a bigmem node.
 9:29  : so the 39th (basename="61-1") job seem to be ALREADY done, according to the log. In the output, all the files are empty or almost.
 I want to use this command: sacct -j 6200096 --format=jobid,jobname,partition,ReqMem,maxrss,ntasks,alloccpus,elapsed,state,exitcode
-when some map jobs will be completed, to see how much memory is needed. it was around 11.3GB last time I looked it up thanks to david. 
+when some map jobs will be completed, to see how much memory is needed. it was around 11.3GB last time I looked it up thanks to david.
 the 85th job (A5618-1) also finished early (within 2 minutes of running time).
 When it's done, I check the outputs and launch count on it.
 It's been an hour and all the map jobs are running, all on "nXX" nodes (XX being a number).
@@ -707,14 +707,14 @@ I removed the "tmp" folder and the "tmp" file that was in /scratch/qtbui_TE/anal
 32; 48-1; Resistance-ind
 49; A0110-1; Cultivated
 
-I'd rather try on 1 and 32 
+I'd rather try on 1 and 32
 or 2 and 32.
 let's try 1 and 32 first. I'll modify call_arguments.sh with their basenames.
 
 See error log of call to keep going.
 
 @@@@@@@@@@@@@@@@ 16/07 @@@@@@@@@@@@@@@@
-8:46 
+8:46
 I continue the debugging of call.
 09:08
 I put prints and launched call. I should also check map output. According to the e-mails, all of them ended correctly.
@@ -730,7 +730,7 @@ drwx--S---   2 ebordron inra       4096 15 juil. 09:34 A1267-1_1.fastq_STARgenom
 drwx--S---   2 ebordron inra       4096 15 juil. 10:32 A1267-1_1.fastq_STARpass1
 
 Also they seem to not be empty. the last 2 are folders.
-MOREOVER, some samples (134-1 , 120-1 , 119-1 , 70-1 , A2313-1) have this problem too, BUT they also have the regular folder with their name and the good data.:q!
+MOREOVER, some samples (134-1 , 120-1 , 119-1 , 70-1 , A2313-1) have this problem too, BUT they also have the regular folder with their name and the good data.
 
 I'll check the logs for A1267. and the inputALL_ARRAY.txt. A1267 IS in this file.
 Also the log for A1267 is the 57th.
@@ -749,8 +749,8 @@ also, while most samples outputs vary in size between 4GB and 1 GB, three of the
 I also indicated their array number as I will restart map for 39 and 85 as right now, count is running on 3's map output.
 
 Anyway, since the output seem correct, I'll just move the files in the respective folders.
-Done. I'll launch count on the samples 3-10. we will have: 
-3	118-1	Resistance-cons	
+Done. I'll launch count on the samples 3-10. we will have:
+3	118-1	Resistance-cons
 4	119-1	Resistance-cons
 5	120-1	Sensible
 6	131-1	Resistance-cons
@@ -759,15 +759,311 @@ Done. I'll launch count on the samples 3-10. we will have:
 9	159-1	Resistance-cons
 10	174-1	Resistance-cons
 
+also we had:
+
+1	114-1-1	Resistance-cons
+2	116-1-1	Resistance-cons
+32	48-1	Resistance-ind
+49	A0110-1	Cultivated
 
 meanwhile I keep debugging call. I think it needs the full path.
 
-@@@@@@@@@@@@@@@@ 16/07 @@@@@@@@@@@@@@@@
+@@@@@@@@@@@@@@@@ 20/07 @@@@@@@@@@@@@@@@
+
+At this point:
+
+- Count needs to be debugged a bit: I ran it on samples 3-10, and the 3 failed. the others ran fine.
+- Call needs to be launched on count output 4-10.
+
+I modify count to run on samples 11 to 124.
+count had a problem: there was no .gtf in squire_fetch. Quynh put it back again. Right now, when I do ls in squire_fetch , this result appears:
+(base) [ebordron@login01 squire]$ ls squire_fetch/
+Marouch_genome.fasta  Marouch_refGene.gtf  Marouch_rmsk.txt  Marouch_STAR  Marouch_TE.gff
+
+I launched count again, it could not open the gtf. Nor could I, so I asked quynh to do a chmod -R 2775 on it. It's been running for 4 minutes now.
+
+Meanwhile, I launch Call on samples 4-10 (the sample 3 contains empty files, I don't include it.). This will compare Resistance-cons with Sensible samples, which doesn't make sense, but it's for trying call on multiple samples.
+I'll make the output of this specific job go to squire_call/output/test_nine_samples.
+
+by running this:
+sacct -j 6215637 --format=jobid,jobname,partition,ReqMem,maxrss,ntasks,alloccpus,elapsed,state,exitcode
+on count, I realise that many of the count jobs were cancelled early.
+there was no filename in these jobs. I'll let all the jobs finish before I correct the ones that need it.
+
+Call job ended early because of this error:
+  File "/gpfs/home/ebordron/SQuIRE/squire/Call.py", line 47, in find_file
+    raise Exception("No " + pattern + " file")
+Exception: No _subFcounts.txt file
+
+This was due to the fact that the input folder (/scratch/qtbui_TE/analysis/squire/squire_count/input_for_call) for call was containing one folder per sample:
+114-1  118-1  119-1  120-1  131-1  133-1  134-1  159-1  174-1  48-1
+
+...instead of all the files in one directory:
+114-1-1_abund.txt                    118-1_refGenecounts.txt    120-1_TEcounts.txt       134-1_abund.txt          174-1.gtf
+114-1-1.gtf                          118-1_TEcounts.txt.header  131-1_abund.txt          134-1.gtf                174-1_refGenecounts.txt
+114-1-1_refGenecounts.txt            119-1_abund.txt            131-1.gtf                134-1_refGenecounts.txt  174-1_subFcounts.txt
+114-1-1_subFcounts.txt               119-1.gtf                  131-1_refGenecounts.txt  134-1_subFcounts.txt     174-1_TEcounts.txt
+114-1-1_TEcounts.txt                 119-1_refGenecounts.txt    131-1_subFcounts.txt     134-1_TEcounts.txt       48-1_abund.txt
+118-1_abund.txt                      119-1_subFcounts.txt       131-1_TEcounts.txt       159-1_abund.txt          48-1.gtf
+118-1.gtf                            119-1_TEcounts.txt         133-1_abund.txt          159-1.gtf                48-1_refGenecounts.txt
+118-1_paired_1.bed.tmpWxFUwZ_sorted  120-1_abund.txt            133-1.gtf                159-1_refGenecounts.txt  48-1_subFcounts.txt
+118-1_paired_2.bed.tmpoH5tiv_sorted  120-1.gtf                  133-1_refGenecounts.txt  159-1_subFcounts.txt     48-1_TEcounts.txt
+118-1_paired_reduced_1.tmpNAEwVa     120-1_refGenecounts.txt    133-1_subFcounts.txt     159-1_TEcounts.txt       count.tmpVQNWTf
+118-1_paired_reduced_2.tmpT7p7Hu     120-1_subFcounts.txt       133-1_TEcounts.txt       174-1_abund.txt
+
+(please note that there are still tmp files for some samples).
+
+I changed this and launched it again (it looks for subfamilies)
+call is done:
+max memory used: 3800308KB
+time it took to complete: 00:04:05
+Files created:
+-rw-r--r-- 1 ebordron inra       150 20 juil. 15:32 call_step_coldata.txt
+-rw-r--r-- 1 ebordron inra   8882474 20 juil. 15:32 call_step_gene_subF_counttable.txt
+-rw-r--r-- 1 ebordron inra 174415094 20 juil. 15:32 call_step_subF_combo.txt
+-rw-r--r-- 1 ebordron inra      4780 20 juil. 15:35 count_graph_all.pdf
+-rw-r--r-- 1 ebordron inra      4875 20 juil. 15:36 count_outliers_all.pdf
+-rw-r--r-- 1 ebordron inra  12260694 20 juil. 15:35 DESeq2_all.txt
+-rw-r--r-- 1 ebordron inra   3345549 20 juil. 15:35 DESeq2_RefSeq_only.txt
+-rw-r--r-- 1 ebordron inra   8915192 20 juil. 15:35 DESeq2_TE_only.txt
+-rw-r--r-- 1 ebordron inra    705142 20 juil. 15:36 dispersion_all.pdf
+-rw-r--r-- 1 ebordron inra      5679 20 juil. 15:36 independent_filtering_rejections_all
+-rw-r--r-- 1 ebordron inra    274486 20 juil. 15:35 MA_plot_all.pdf
+-rw-r--r-- 1 ebordron inra    160698 20 juil. 15:35 MA_plot_RefSeq_only.pdf
+-rw-r--r-- 1 ebordron inra     73798 20 juil. 15:35 MA_plot_TE_only.pdf
+-rw-r--r-- 1 ebordron inra     14719 20 juil. 15:35 meanSd_plot_all_ntd.pdf
+-rw-r--r-- 1 ebordron inra     14895 20 juil. 15:36 meanSd_plot_all_rld.pdf
+-rw-r--r-- 1 ebordron inra     13877 20 juil. 15:36 meanSd_plot_all_vsd.pdf
+-rw-r--r-- 1 ebordron inra      3611 20 juil. 15:36 pca_all_vsd.pdf
+-rw-r--r-- 1 ebordron inra      7086 20 juil. 15:36 sample_sample_distance_all_vsd.pdf
+-rw-r--r-- 1 ebordron inra      6476 20 juil. 15:36 top100_heatmap_all_ntd.pdf
+-rw-r--r-- 1 ebordron inra      6446 20 juil. 15:36 top100_heatmap_all_rld.pdf
+-rw-r--r-- 1 ebordron inra      6474 20 juil. 15:36 top100_heatmap_all_vsd.pdf
+-rw-r--r-- 1 ebordron inra      3611 20 juil. 15:35 volcano_all.pdf
+-rw-r--r-- 1 ebordron inra      3611 20 juil. 15:36 volcano_RefSeq_only.pdf
+-rw-r--r-- 1 ebordron inra      3611 20 juil. 15:36 volcano_TE_only.pdf
+
+I launched it again, but for locus level (to do this, I commented the part of the command where "--subfamily" is added.):
+call is done:
+mem used: 2 129 144KB
+running time: 00:03:16
+Files created:
+-rw-r--r-- 1 ebordron inra      150 20 juil. 15:51 call_step_coldata.txt
+-rw-r--r-- 1 ebordron inra  3002901 20 juil. 15:51 call_step_gene_TE_counttable.txt
+-rw-r--r-- 1 ebordron inra 36637820 20 juil. 15:51 call_step_TE_combo.txt
+-rw-r--r-- 1 ebordron inra     4782 20 juil. 15:53 count_graph_all.pdf
+-rw-r--r-- 1 ebordron inra     4939 20 juil. 15:54 count_outliers_all.pdf
+-rw-r--r-- 1 ebordron inra  6035646 20 juil. 15:53 DESeq2_all.txt
+-rw-r--r-- 1 ebordron inra  3337475 20 juil. 15:53 DESeq2_RefSeq_only.txt
+-rw-r--r-- 1 ebordron inra  2698218 20 juil. 15:53 DESeq2_TE_only.txt
+-rw-r--r-- 1 ebordron inra   737911 20 juil. 15:54 dispersion_all.pdf
+-rw-r--r-- 1 ebordron inra     5691 20 juil. 15:54 independent_filtering_rejections_all
+-rw-r--r-- 1 ebordron inra   285439 20 juil. 15:53 MA_plot_all.pdf
+-rw-r--r-- 1 ebordron inra   160123 20 juil. 15:53 MA_plot_RefSeq_only.pdf
+-rw-r--r-- 1 ebordron inra   101659 20 juil. 15:53 MA_plot_TE_only.pdf
+-rw-r--r-- 1 ebordron inra    27502 20 juil. 15:54 meanSd_plot_all_ntd.pdf
+-rw-r--r-- 1 ebordron inra    27102 20 juil. 15:54 meanSd_plot_all_rld.pdf
+-rw-r--r-- 1 ebordron inra    25250 20 juil. 15:54 meanSd_plot_all_vsd.pdf
+-rw-r--r-- 1 ebordron inra     3611 20 juil. 15:54 pca_all_vsd.pdf
+-rw-r--r-- 1 ebordron inra     7100 20 juil. 15:54 sample_sample_distance_all_vsd.pdf
+-rw-r--r-- 1 ebordron inra     6474 20 juil. 15:54 top100_heatmap_all_ntd.pdf
+-rw-r--r-- 1 ebordron inra     6472 20 juil. 15:54 top100_heatmap_all_rld.pdf
+-rw-r--r-- 1 ebordron inra     6479 20 juil. 15:54 top100_heatmap_all_vsd.pdf
+-rw-r--r-- 1 ebordron inra     3611 20 juil. 15:53 volcano_all.pdf
+-rw-r--r-- 1 ebordron inra     3611 20 juil. 15:54 volcano_RefSeq_only.pdf
+-rw-r--r-- 1 ebordron inra     3611 20 juil. 15:54 volcano_TE_only.pdf
+
+It doesn't seem to have run on locus. I'll completely remove "--subfamily" from the cmd to do this.
+The files created after this step are actually the ones obtained by commenting --subfamily. the only difference seem to bear the prefix "gene_subF" for subfamily and "gene_TE" for locus.
+< ├── call_step_gene_subF_counttable.txt
+< ├── call_step_subF_combo.txt
+---
+> ├── call_step_gene_TE_counttable.txt
+> ├── call_step_TE_combo.txt
+
+count is nearly finished. after 1h25, there's only 5 left.
+doing tree --du showed me that A2313-1 and an other sample only contain empty files (maybe its not done)
+Count is done! I do sacct.
+These samples had the "FAILED" mention.
+6215773_17
+6215773_25
+6215773_31
+6215773_42
+6215773_52
+6215773_62
+6215773_73
+6215773_78
+6215773_120
+
+I go to /scratch/qtbui_TE/analysis/squire/squire_count/logs
+I create a "failed" folder
+I put them there
+I see what's wrong
+Done. As I said it before, they had no basename.
+I relaunch them, and only them. I modify run_count.sh for that.
+When they complete, I will check the logs. do they still have this problem?
+
+@@@@@@@@@@@@@@@@ 21/07 @@@@@@@@@@@@@@@@
+Count is complete, but 73 and 42 failed. I check the logs (count_failed_ones73.out and count_failed_ones42.out). They don't have basename problems. I relaunch the 2 of them to see if the log is different after a second run on the same parameters. I check the new logs (two_left42.out and two_left73.out):
+same problems. I add prints in Count.py for 42.
+For 42 (sample name is 70): the map output is bad. the 70-1Aligned.out.bam is empty. However, most of the samples don't have a aligned.out.bam . I'll just remove it and launch count again.
+I made a script to move count's output from individual folders to one global folder, so that call can take this data as input.
+I made another script (/scratch/qtbui_TE/analysis/squire/scripts_squire/additional_scripts/call_give_conditions/get_list_of_samples.sh) to make call easier to use. I will modify call_arguments.sh to call it.
+Call has a problem:
+File "/gpfs/home/ebordron/SQuIRE/squire/Call.py", line 47, in find_file
+    raise Exception("No " + pattern + " file")
+Exception: No _TEcounts.txt file
+I look it up: I uncomment the prints in find_file().
+everything seems fine, there IS a _TEcounts.txt (even several ones) in the input_for_call folder.
+To debug this, I move all the files in /scratch/qtbui_TE/analysis/squire/squire_count/stock_for_input and only keep the 114-1 files in /scratch/qtbui_TE/analysis/squire/squire_count/input_for_call
+There is a new error. I'll use 2 samples per condition and see if it stays. the samples are:
+114 and 116 for Resistance-cons
+133 and 134 for Sensible
+I still have the "no TE_counts" error:
+File "/gpfs/home/ebordron/SQuIRE/squire/Call.py", line 47, in find_file
+  raise Exception("No " + pattern + " file")
+Exception: No _TEcounts.txt file
+
+I modify call_arguments.sh and enter the 2samples list for ONLY these 4 samples. the lines in call_arguments.sh look like this:
+condition1=Resistance-cons
+#Name of condition for group 1 in squire Call
+condition2=Sensible
+#Name of condition for group 2 in squire Call
+
+group1=114-1,116-2
+#group1=$(bash /scratch/qtbui_TE/analysis/squire/scripts_squire/additional_scripts/call_give_conditions/get_list_of_samples.sh $condition1)
+#Name of basenames of samples in group 1
+group2=133-1,134-1
+#group2=$(bash /scratch/qtbui_TE/analysis/squire/scripts_squire/additional_scripts/call_give_conditions/get_list_of_samples.sh $condition2)
+#Name of basenames of samples in group 2
+
+I launch call again for this.
+
+It seems that giving the exact sample names is important, but I was already doign this. I will modify the scripts to extract only the files needed and leave the samples not required in the count output folder. For example, If I run call on Resistance-Ind versus Resistance-cons ; I won't transfer the files of the samples that are Sensible.
+but first I'm gonna try this manually.
+70-1 was not in input_for_call. It was the only one.
+
+I modified manually /scratch/qtbui_TE/analysis/squire/squire_count/input_for_call . Now, this folder contains two folders:
+input_for_call
+	conditions
+		Cultivated
+		Resistance-cons
+		Resistance-ind
+		Sensible
+		Wild
+	files
+Each folder in "conditions" contains the samples corresponding to its category.
+
+About the last 2 samples of count: 42 (sample name 70) finished well. I have to add it to its condition.
+but 73 (sample A2313-1) didn't end well, I might have to launch map again on it THEN count. for now I launched count on it only.
+Here's the part of the error that makes me want to launch map again:
+####################
+[W::bam_hdr_read] EOF marker is absent. The input is probably truncated.
+Quantifying Gene expression 2021-07-21 12:27:43.498057
+
+Running Guided Stringtie on each bamfile A2313-1 2021-07-21 12:27:43.498739
+
+[bam_header_read] EOF marker is absent. The input is probably truncated.
+
+Error: the input alignment file is not sorted!
+####################
+I relaunch map:
+- the log name is: map_A2313-173.out
+- I changed the name of the old A2313-1 folder: its now called old_A2313-1 .
+Map is running for this sample.
+
+Now, about Call:
+I changed it so it uses the folder I made before. hopefully it will work now.
+still this error:
+File "/gpfs/home/ebordron/SQuIRE/squire/Call.py", line 47, in find_file
+  raise Exception("No " + pattern + " file")
+Exception: No _TEcounts.txt file
+
+!!!!!!!!!!!!!!
+I removed A2313-1 from Call_arguments (Cultivated) as it is mapping rn. It was causing the problem: I did not see that call was searching for this sample's specific file.
+Call should work now!
+!!!!!!!!!!!!!!
+14:51
+Call is still running. it has been running for 15 minutes now.
+Map too is still running.
+
+
+╔═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
+trucs à faire:
+		- faire un clean_arguments.sh
+		- input de clean : indiquer les 10 premieres lignes
+- input de map: pareil pour chaque fichier
+- map : ajouter des notes sur les paramètres à modifier pour appliquer squire à une autre plante (par exemple). On a modifié le script python, c'est de ca qu'il est question.
+- map : ajouter chemin du fichier d'erreur ET chemin du dossier output
+- call : penser à lancer call d'abord en locus puis en sous-famille. ajouter cette information sur le readme.
+- ajouter une copie de chaque Readme sur le serveur dans chaque dossier.
+- !! input for count: indiquer comment classer l'output de count.
+- relancer les 5 échantillons de map qui on un aligned.
+
+-rendre le readme utilisable par n'importe qui.
+- expliquer tous mes pettis scripts: si vous rencontrez tel probleme, il faut faire tel script.
+╚═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
+
+@@@@@@@@@@@@@@@@ 22/07 @@@@@@@@@@@@@@@@
+call finished after 4h30 of running time. It used a maximum of 6GB ram. It ran on Cultivated vs Wild.
+the log is:
+/scratch/qtbui_TE/analysis/squire/squire_call/logs/wild_cultiv.out
+the output folder is :
+ll /scratch/qtbui_TE/analysis/squire/squire_call/output/wild_cultiv
+-rw-r--r-- 1 ebordron inra      1346 21 juil. 14:38 call_step_coldata.txt
+-rw-r--r-- 1 ebordron inra  14784114 21 juil. 14:38 call_step_gene_TE_counttable.txt
+-rw-r--r-- 1 ebordron inra 419916544 21 juil. 14:38 call_step_TE_combo.txt
+-rw-r--r-- 1 ebordron inra      5335 21 juil. 14:58 count_graph_all.pdf
+-rw-r--r-- 1 ebordron inra     11489 21 juil. 19:04 count_outliers_all.pdf
+-rw-r--r-- 1 ebordron inra   7068908 21 juil. 14:58 DESeq2_all.txt
+-rw-r--r-- 1 ebordron inra   3809804 21 juil. 14:58 DESeq2_RefSeq_only.txt
+-rw-r--r-- 1 ebordron inra   3259151 21 juil. 14:58 DESeq2_TE_only.txt
+-rw-r--r-- 1 ebordron inra    885104 21 juil. 19:04 dispersion_all.pdf
+-rw-r--r-- 1 ebordron inra      5389 21 juil. 19:04 independent_filtering_rejections_all
+-rw-r--r-- 1 ebordron inra    402354 21 juil. 14:58 MA_plot_all.pdf
+-rw-r--r-- 1 ebordron inra    208244 21 juil. 14:58 MA_plot_RefSeq_only.pdf
+-rw-r--r-- 1 ebordron inra    139114 21 juil. 14:58 MA_plot_TE_only.pdf
+-rw-r--r-- 1 ebordron inra     25681 21 juil. 19:03 meanSd_plot_all_ntd.pdf
+-rw-r--r-- 1 ebordron inra     20823 21 juil. 19:03 meanSd_plot_all_rld.pdf
+-rw-r--r-- 1 ebordron inra     21594 21 juil. 19:03 meanSd_plot_all_vsd.pdf
+-rw-r--r-- 1 ebordron inra      3611 21 juil. 19:04 pca_all_vsd.pdf
+-rw-r--r-- 1 ebordron inra     43663 21 juil. 19:04 sample_sample_distance_all_vsd.pdf
+-rw-r--r-- 1 ebordron inra     14436 21 juil. 19:03 top100_heatmap_all_ntd.pdf
+-rw-r--r-- 1 ebordron inra     14521 21 juil. 19:03 top100_heatmap_all_rld.pdf
+-rw-r--r-- 1 ebordron inra     14454 21 juil. 19:03 top100_heatmap_all_vsd.pdf
+-rw-r--r-- 1 ebordron inra      3611 21 juil. 14:58 volcano_all.pdf
+-rw-r--r-- 1 ebordron inra      3611 21 juil. 19:06 volcano_RefSeq_only.pdf
+-rw-r--r-- 1 ebordron inra      3611 21 juil. 19:06 volcano_TE_only.pdf
+
+Map for A2313-1 finished running after 03:50:52 of running time.
+the log don't show errors.
+The output is:
+ll /scratch/qtbui_TE/analysis/squire/squire_map/output/squire_map/A2313/
+-rw-r--r-- 1 ebordron inra 3269852297 21 juil. 17:20 A2313.bam
+-rw-r--r-- 1 ebordron inra     439960 21 juil. 17:24 A2313.bam.bai
+-rw-r--r-- 1 ebordron inra          0 21 juil. 14:50 A2313Chimeric.out.junction
+-rw-r--r-- 1 ebordron inra       2035 21 juil. 16:41 A2313.log
+-rw-r--r-- 1 ebordron inra    4672884 21 juil. 16:41 A2313SJ.out.tab
+drwx--S--- 2 ebordron inra       4096 21 juil. 13:33 A2313_STARgenome
+drwx--S--- 2 ebordron inra       4096 21 juil. 14:50 A2313_STARpass1
+
+It seems normal.
+10:08
+I launch count.
 
 
 
+ces 3 échantillons sont à relancer dans map:
+119	4
+120	5
+134	8
+map tourne. Il faut lancer count dessus quand map est fini. Ensuite, lancer Call.
+information importante: J'ai commenté la ligne 214 de Call.py : os.unlink(r_script) .Cette ligne détruit le script R qui est créé par ce script. En la commentant, on pourrait voir comment ce script fonctionne pour modifier les couleurs des graphes potentiellement.
 
+Map is done for theses samples. the logs don't show errors. The output is normal, there is no weird file.
 
+I transfer the count output of the samples "70" and "A2313" to their respectives condition folders, as I did not did that earlier.
+I launch count on it; 119 , 120 and 134 don't have a count folder already. I guess I forgot that I removed them.
+count is running.
 
-
-
+Note: some count outputs contain tmp files; it might cause errors. re-running count on them could be needed to ensure the pipeline flows correctly.
