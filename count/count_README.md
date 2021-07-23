@@ -3,11 +3,11 @@
 ## Prerequisites
 
 - The script run_count.sh must be filled. It can be used in its present state, but if you need to use it on different data, edit these fields:
-	- ```SBATCH -t 1-12:00:00```
+	- ```SBATCH -t 1-12:00:00``` \
 		Counting ran correctly with this time limit, but adjust this to your data.
-	- ```SBATCH --mem=13GB```
+	- ```SBATCH --mem=13GB```\
 		Counting ran correctly with this memory limit, but adjust this to your data.
-	- ```SBATCH --cpus-per-task=1```
+	- ```SBATCH --cpus-per-task=1```\
 		Counting ran correctly with parameter, but adjust this to your data.
 	- ```path_data="/scratch/qtbui_TE/analysis/squire/squire_map/output/squire_map"```
 		The folder where the map output is stored. The map output consists of one folder per sample.
