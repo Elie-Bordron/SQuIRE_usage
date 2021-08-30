@@ -4,11 +4,6 @@ This repository is about my internship of june-july 2021 at INRAE.
 My work dealed with the tool [SQuIRE](https://github.com/wyang17/SQuIRE). You may find here informations on the way we to used this tool on plant data.
 
 
-
-<<<<<<< HEAD
-These informations are in disorder, I shall edit this file regularly.
->>>>>>> 
-
 ## Installation tips
 
 Installation of squire has been done following the instructions of the github repository at https://github.com/wyang17/SQuIRE#installation .
