@@ -5,9 +5,7 @@ My work dealed with the tool [SQuIRE](https://github.com/wyang17/SQuIRE). You ma
 
 
 
-<<<<<<< HEAD
-These informations are in disorder, I shall edit this file regularly.
->>>>>>> 
+
 
 ## Installation tips
 

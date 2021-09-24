@@ -87,6 +87,7 @@ I will launch it again with these parameters:
 #SBATCH --array=1-124           # we have 124 samples
 I did it at 15:13 .
 
+
 résumé du pipeline:
 squire fetch produit un rmsk.txt. squire clean prend ce fichier pour créer un .bed.
 je dois donc regarder ce qui se trouve dans le rmsk.txt pour savoir quel fichier je dois donner en entrée.
@@ -134,7 +135,7 @@ RedHat,12,5
 sed 's/\(Ubuntu\)\(,.*,\).*/\3\299/' input_sed_test.txt > output_sed_test.txt
 input est le même.
 output:
-sed: -e expression #1, char 30: invalid reference \3 on `s' command's RHS
+sed: -e expression #1, char 30: invalid reference \3 on 's' command's RHS
 
 
 sed 's/\(Ubuntu\)\(,.*,\).*/\1\199/' input_sed_test.txt > output_sed_test.txt
@@ -875,11 +876,6 @@ Files created:
 
 It doesn't seem to have run on locus. I'll completely remove "--subfamily" from the cmd to do this.
 The files created after this step are actually the ones obtained by commenting --subfamily. the only difference seem to bear the prefix "gene_subF" for subfamily and "gene_TE" for locus.
-< ├── call_step_gene_subF_counttable.txt
-< ├── call_step_subF_combo.txt
----
-> ├── call_step_gene_TE_counttable.txt
-> ├── call_step_TE_combo.txt
 
 count is nearly finished. after 1h25, there's only 5 left.
 doing tree --du showed me that A2313-1 and an other sample only contain empty files (maybe its not done)
@@ -1318,7 +1314,30 @@ count is running.
 samples 3,19,24,82,83
 failed. 3 had wrong map output
 19,24,82,83 had no basename.
-The solution to this problem (I have faced it earlier) is to relaunch count on these samples.
+The solution to this problem (The basename problem; I have faced it earlier) is to relaunch count on these samples.
 I modified run_count.sh to run on them and launched it with different log names.
 Of course, 3 stopped. I relaunch map for it.
 After 32 minutes, some count jobs started to complete.
+After 1 hour, a lot of count jobs complete.
+
+relaunch_no_basename:
+out of 19,24,82,83 ; 82 finished. no errors in log, it has a basename (A5406-1). output seems normal too.
+I can search relaunch_no_basename in my mailbox to see if they ended well. when all of them are done, I could launch call on all conditions with locus and subfamily, but I'd rather finish the readme's before. I should complete the main readme with all the complementary informations I have.
+
+
+@@@@@@@@@@@@@@@@ 26/07 @@@@@@@@@@@@@@@@
+the mapping of sample 118, which array number is 3, ran correctly. No log error, data seems ok. I have to run count on it.
+I modified count to run on this sample only.
+It's running.
+It's done. no log error, no output problem.
+
+At this point, the mapping and counting steps were ran on all the samples.
+
+@@@@@@@@@@@@@@@@ 01/08 @@@@@@@@@@@@@@@@
+I follow the guidelines from tips_stage_M2_et_plus_tard . For now, I complete call's Readme.
+
+@@@@@@@@@@@@@@@@ 08/09 @@@@@@@@@@@@@@@@
+First I'll check that the script move_count_output.sh works (as it seems to do so), then I'll explain how to use it in Call's readme.
+It works, I tested it with tmp_conditions and tmp_input_for_count in /scratch/qtbui_TE/analysis/squire/squire_count/input_for_call
+I'll add this information in call readme.
+In the call readme, I also have to talk about running each comparison of 2 groups two times: first for the subfamily level, then for the locus level.

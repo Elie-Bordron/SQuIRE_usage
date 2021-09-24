@@ -1,18 +1,78 @@
 # CALL STEP
 
-## Input
+## Important information
+This step uses count's output and needs it to be ordered in a specific way: Count's output needs to be placed in a folder called "conditions" (/scratch/qtbui_TE/analysis/squire/squire_count/input_for_call/conditions). This folder contains five folders, one per condition:
+```
+$ ls /scratch/qtbui_TE/analysis/squire/squire_count/input_for_call/conditions
+Cultivated  Resistance-cons  Resistance-ind  Sensible  Wild
+```
+As all the samples are part of a condition (Wild, Cultivated, Sensible...), the data (count output) is distributed among these folders; each file of a sample is moved to its condition folder.
+Call doesn't use directly these folders. When this step is run, the script call.sh reads the two conditions used (we provide this information in count_arguments.sh), copies the content of the corresponding folders to a temporary folder (/scratch/qtbui_TE/analysis/squire/squire_count/input_for_call/files_to_use_for_one_run
+) that Call will browse for data.
+At the end of this step, this temporary folder is emptied.
 
-- The results of Count step. They can be found in the count output folder. This folder's path is specified in call_arguments.sh .
-- Specifications about the two groups compared:
-    - The name of the groups
-    - The repartition of samples within the two groups.
-    These informations are in call_arguments.sh .
 
+
+## Prerequisites
+
+- The script run_call.sh must be filled. It can be used in its present state, but if you need to use squire on different data, you may need to edit these fields:
+    - ```path_scripts="/scratch/qtbui_TE/analysis/squire/scripts_squire"```\
+        This variable stores the path to the scripts folder. This folder must contain run_call.sh, call.sh and call_arguments.sh
+    - ```call_script=$path_scripts/call.sh```\
+        This variable stores the path to the script call.sh .
+    - ```arguments_script=$path_scripts/call_arguments.sh```\
+        This variable stores the path to the script call_arguments.sh .
+
+- The script call_arguments.sh must be filled. It can be used in its present state, but if you need to use squire on different data, you may need to edit these fields:
+    - `condition1=Cultivated` and `condition2=Wild`\
+        These are the names of the conditions chosen for a run of this step. This could be changed, for example, to
+		`condition1=Resistance-ind` and `condition2=Resistance-cons`.
+    - `group1=$(bash $get_list_of_samples $condition1)` and	`group2=$(bash $get_list_of_samples $condition2)`\
+        Each of these values hold a comma-separated list of the samples for each of the two conditions used in this run:
+        ```
+        group1=A0008-1,A0014-1,A0074-1,A0110-1,A0157-1,A0217-1,A0544-1,A0654-1,A0665-1,A0682-1,A0882-1,A1267-1,A1275-1,A1314-1,A1319-1,A1333-1,A1352-1,A1458-1,A1600-1,A1601-1,A1690-1,A1714-1,A1721-1,A1792-1,A2067-1,A2137-1,A2204-1,A2314-1,A2351-1,A2645-1,A3024-1,A3509-1,A3517-1,A3522-1,A4082-1,A5406-1,A5614-1,A5615-1,A5618-1,A5620-1,A5790-1,A5810-1,A5928-1
+        ```
+        These lists are created via a script located at `/scratch/qtbui_TE/analysis/squire/scripts_squire/additional_scripts/call_give_conditions/get_list_of_samples.sh`.
+	- `call_folder=/scratch/qtbui_TE/analysis/squire/squire_call/output/wild_cultiv/subfamily`
+		Indicate here where the output should be send.
+
+	- `count_folder=/scratch/qtbui_TE/analysis/squire/squire_count/input_for_call/files`
+		Indicate here where count's output is.
+
+        It needs a file that indicates, for each sample, the sample name and the condition it belongs to. For example, here are the lines 105 to 115:
+        ```
+        ...
+        Wild	KZ87-2-1
+        Wild	UZ10-1-1
+        Wild	UZ11-5-1
+        Wild	UZ9-1-1
+        Sensible	29-1
+        Sensible	30-1
+        Sensible	120-1
+        Sensible	133-1
+        Sensible	134-1
+        Sensible	202-1
+        ...
+        ```
+		this file is located at `/scratch/qtbui_TE/analysis/squire/scripts_squire/additional_scripts/call_give_conditions/conditions_table.txt`
+
+
+
+- The script call.sh must be filled. It can be used in its present state, but if you need to use squire on different data, you may need to edit these fields:
+    - `tmp_input=/scratch/qtbui_TE/analysis/squire/squire_count/input_for_call/files_to_use_for_one_run`\
+        This variable stores the path to the temporary folder that Call will open to find the files it needs (count output) for the two conditions compared here (e.g. Wild and Cultivated). It will contain only the files for these two conditions.
+    - ```conditions_folder=/scratch/qtbui_TE/analysis/squire/squire_count/input_for_call/conditions```\
+        This variable stores the path to the count output after being distributed within the five conditions folders.
+    This script first removes all files contained in the tmp_input folder (they come from a previous run), then copies the appropriate files from the conditions_folder to the tmp_input folder. This ensures that Call doesn't use files from a precedent run.
+    The script knows which conditions to use when reading the call_arguments.sh script.
+
+- Count step outputs one folder per sample, which contains 5 files. A directory holds all of these folders. This directory's path must be specified in call_arguments.sh: `/scratch/qtbui_TE/analysis/squire/squire_count/output`
 
 ##  Path & command
 
 The files run_call.sh , call.sh and call_arguments.sh must all be in the same directory:
 ```
+conda activate squire
 /scratch/qtbui_TE/analysis/squire/scripts_squire
 ```
 
@@ -123,5 +183,12 @@ chr1|42374112|42377431|mp132651-1_chr1_DHX-incomp_reswagMde-B-R3105-Map11_revers
 
 
 ## Error logs
-The log folder is:
-```/scratch/qtbui_TE/analysis/squire/squire_call/logs```
+
+The log folder can be specified with this Slurm option:
+```
+#SBATCH -o /scratch/qtbui_TE/analysis/squire/squire_call/logs/call.out
+```
+Add this line to split the log file and the error file:
+```
+#SBATCH -e /scratch/qtbui_TE/analysis/squire/squire_call/logs/call_error.out
+```

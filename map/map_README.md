@@ -9,6 +9,8 @@
 		I set the memory limit to 13GB since the maximum used for a mapping was 13.4GB, but adjust this to your data.
 	- ```SBATCH --cpus-per-task=2```
 		I set the number of cores to 2, but you can set it to 1 for 13.4GB .
+	- ```#SBATCH --array=1-124```\
+		Set this to 124 for running on all samples. If you need to run only a few samples, separate them with commas.
 	- ```read_length=150```
 		Adjust this to your data.
 	- ```suffix_fastq="-1_1.fastq.gz"```
@@ -23,11 +25,9 @@
 		This variable stores the path to squire_star.sh, which will execute squire Map.
 	This is pretty much everything you need to modify in this script when running squire on different data. For the rest of SLURM options, set them to fit your needs
 - Fill squire_star.sh:
-	- ```
-	squire Map --read1 "$read1" --read2 "$read2" --map_folder $3/squire_map/$basename --read_length $4 --fetch_folder $2 --pthreads 12  --name "$basename" --verbosity
-	```
-	You can set ```--map_folder``` to ```$3/squire_map``` if you need to have all the output files in the same directory.
-	This is pretty much everything you need to modify in this script when running squire on different data
+	- ```squire Map --read1 "$read1" --read2 "$read2" --map_folder $3/squire_map/$basename --read_length $4 --fetch_folder $2 --pthreads 12  --name "$basename" --verbosity```
+	You can set ```--map_folder``` to ```$3/squire_map``` instead of ```$3/squire_map/$basename``` if you need to send all the output files in the same directory.
+	This should be everything you need to modify in this script when running squire on different data.
 - Put run_mapping.sh and squire_star.sh in the same directory.
 - Make sure that the following files are in the fetch folder. You may run squire fetch for this, or just provide your own files:
     - Marouch_genome.fasta
@@ -42,6 +42,7 @@
 
 Command to run:
 ```
+conda activate squire
 sbatch /scratch/qtbui_TE/analysis/squire/scripts_squire/run_mapping.sh
 ```
 It seems that forgetting to activate squire before using this command doesn't do any harm, but I recommend you to do it anyway.
@@ -61,7 +62,7 @@ ls /scratch/qtbui_TE/analysis/squire/squire_map/output/squire_map
 133-1    206-1  225-1    37-1   53-1    70-1  A0110-1  A0882-1  A1458-1  A2067-1  A3024-1  A5615-1  CH128-1  KR84-1-1   KZ125-1-1  KZ231-1-1  KZ74-5-1
 ```
 
-In each of these folders, you should find 5 files and 2 folders (Here is the content of the KZ123-2-1 folder):
+In each of these folders, you should find 5 files and 2 folders (For example, here is the content of the KZ123-2-1 folder):
 ```
 ll /scratch/qtbui_TE/analysis/squire/squire_map/output/squire_map/KZ123-2-1
 
@@ -75,8 +76,12 @@ drwx--S--- 2 ebordron inra       4096 15 juil. 17:10 KZ123-2-1_STARpass1
 ```
 
 ## Error logs
-The log folder is:
+The log folder can be specified with this Slurm option:
 ```
-/scratch/qtbui_TE/analysis/squire/squire_call/logs
+#SBATCH -o /scratch/qtbui_TE/analysis/squire/squire_map/logs/map_%a.out
 ```
-It contains the error logs for every array job.
+Using '%a', one log file per array job will be produced.
+Add this line to split the log file and the error file:
+```
+#SBATCH -e /scratch/qtbui_TE/analysis/squire/squire_map/logs/map_error_%a.out
+```
