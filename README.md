@@ -1,10 +1,7 @@
-# squire
+# Squire usage for prunus
 
 This repository is about my internship of june-july 2021 at INRAE.
 My work dealed with the tool [SQuIRE](https://github.com/wyang17/SQuIRE). You may find here informations on the way we to used this tool on plant data.
-
-
-
 
 
 ## Installation tips
@@ -18,9 +15,7 @@ conda create --name squire --override-channels -c iuc -c bioconda -c conda-forge
 
 ```
 
-At some point, you may encounter an error resembling this when submitting a job:
-"squire: command not found"
-If it happens, make sure to activate the squire environment with:
+To use the environment:
 ```bash
 conda activate squire
 ```
@@ -29,23 +24,3 @@ or
 source activate squire
 ```
 
-If this error happens even though squire is activated, removing this environment and create it again might solve the error.
-To do this, first get the name of the environment:
-`conda env list`
-
-Then remove it:
-```bash
-conda env remove -n env_name
-```
-
-Navigate then to the directory holding the SQuIRE folder and remove it as well (mine is here: /gpfs/home/ebordron/SQuIRE):
-```bash
-rm -r SQuIRE/
-```
-
-Create the conda environment (see earlier in the text)
-
-Finally, copy the SQuIRE software from the Git repository onto your local installation (do not forget the "." at the end).
-```bash
-git clone https://github.com/wyang17/SQuIRE; cd SQuIRE; pip install -e .
-```
