@@ -14,6 +14,7 @@ The command used is:
 ```bash
 conda create --name squire --override-channels -c iuc -c bioconda -c conda-forge -c defaults -c r python=2.7.13 bioconductor-deseq2=1.16.1 r-base=3.4.1 r-pheatmap bioconductor-vsn bioconductor-biocparallel=1.12.0 r-ggrepel star=2.7.5a bedtools=2.25.0 samtools=1.1 stringtie=1.3.3 igvtools=2.3.93 ucsc-genepredtobed ucsc-gtftogenepred ucsc-genepredtogtf ucsc-bedgraphtobigwig r-hexbin
 
+conda create --name squire --override-channels -c iuc -c bioconda -c conda-forge -c defaults -c r python=2.7.13 bioconductor-deseq2=1.16.1 r-base=3.4.1 r-pheatmap bioconductor-vsn bioconductor-biocparallel=1.12.0 r-ggrepel star=2.7.5a bedtools=2.25.0 samtools=1.1 stringtie=2.1.0 igvtools=2.3.93 ucsc-genepredtobed ucsc-gtftogenepred ucsc-genepredtogtf ucsc-bedgraphtobigwig r-hexbin
 ```
 
 To use the environment:
@@ -29,6 +30,7 @@ Clone git repo:
 git clone https://github.com/wyang17/SQuIRE; cd SQuIRE; pip install -e .
 ```
 
+
 ## Data preparation
 In this case we use a custom genome. Make sure to index your genome.
 In `raw_data/` put:
@@ -39,15 +41,17 @@ In `raw_data/` put:
 Then:
 ```
 mkdir 03_fetch/
-cp raw_data/info_reswagMa4S_refTEs_TE_squire.txt 03_fetch/Marouch_rmsk.txt
-cp raw_data/Marouch_v3.1_w60.fasta 03_fetch/Marouch_genome.fasta
+cp raw_data/info_reswagMa4S_refTEs_TE_squire.txt 03_fetch/Marouch/Marouch_rmsk.txt
+cp raw_data/Marouch_v3.1_w60.fasta 03_fetch/Marouch/Marouch_genome.fasta
 ```
-Convert your gff to gtf:
+Convert your gff to gtf using [kentutils](https://agat.readthedocs.io/en/latest/gff_to_gtf.html#kent-utils):
 ```
-sbatch extra/gff2gtf.sh
+gff3ToGenePred Marouch_TE.cleaned2.gff3 tmp.Marouch.genePred
+genePredToGtf file tmp.Marouch.genePred Marouch.cleaned.gtf
 ```
-The output will be `03_fetch/Marouch_refGene.gtf`.
-Then you need to index your genome:
+
+The output will be `03_fetch/Marouch/Marouch.cleaned.gtf`.
+Then you need to index your genome with STAR=2.7.5a:
 ```
 sbatch 01_index/index.sh
 ```
@@ -60,16 +64,17 @@ Then run clean step:
 ```
 sbatch 02_clean/run_clean.sh 02_clean/clean_arguments.sh
 ```
-In `02_clean/` you will find 2 files:
+In `02_clean/Marouch` you will find 2 files:
 - Marouch_all.bed
 - Marouch_all_copies.txt
 
 We will skip the **fetch** step.
 
+
 ## Map
-As said before, check that you have these files in `03_fetch/`:
+As said before, check that you have these files in `03_fetch/Marouch/`:
 - Marouch_genome.fasta
-- Marouch_refGene.gtf
+- Marouch.cleaned.gtf
 - Marouch_rmsk.txt
 
 Check `04_map/run_mapping.sh` and `04_map/map_arguments.sh`.
@@ -78,6 +83,17 @@ Run:
 mkdir 03_fetch/Marouch_STAR/
 cp 01_index/out/* 03_fetch/Marouch_STAR/
 sbatch 04_map/run_mapping.sh 04_map/map_arguments.sh
+```
+In `04_map/out` you will find one folder per samples.
+
+## Count
+Add `.gff` file with TEs in `03_fetch`:
+```
+mv raw_data/PruarM.annotated.gff3 03_fetch/Marouch_TE.gff3
+```
+Run count step:
+```
+sbatch 05_count/run_count.sh 05_count/count_arguments.sh
 ```
 
 
