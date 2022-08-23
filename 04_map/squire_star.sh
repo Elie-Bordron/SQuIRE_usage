@@ -19,7 +19,6 @@ mkdir -pv $3 # output folder
 mkdir -pv "$3/tmp" # temporary folder
 export TMPDIR="$3/tmp" # store squire temp files
 
-
 # EXTRACT BOTH FASTQ FILES PER SAMPLE
 echo SLURM_ARRAY_TASK_ID: $SLURM_ARRAY_TASK_ID
 ls -1 $1 | while read first_line; read second_line; do echo "$first_line $second_line"; done > "$3/input_ARRAY.txt"
@@ -49,20 +48,19 @@ echo path:: $path
 j=${filename#$path}		#extract the filename only
 echo filename:: $filename
 echo j: $j
-basename=${j%$5} 
+basename=${j%_R1$5} 
+basename=${basename%_R2$5}
 echo basename:: $basename
-#
+
 # ADD PATH TO FASTQ FILES
 read1=$1/$fastq1
 read2=$1/$fastq2
 
-#conda activate squire
-
 # RUN SQUIRE-MAP ALIGNMENT
-echo running Map.py
-#echo the command is: squire Map --read1 "$read1" --read2 "$read2" --map_folder $3/squire_map/$basename --read_length $4 --fetch_folder $2 --pthreads 12  --name "$basename" --verbosity
+echo "running Map.py"
+echo the command is: squire Map --read1 "$read1" --read2 "$read2" --map_folder $3/$basename --read_length $4 --fetch_folder $2 --pthreads 12  --name "$basename"
 
-squire Map --read1 "$read1" --read2 "$read2" --map_folder $3/squire_map/$basename --read_length $4 --fetch_folder $2 --pthreads 12  --name "$basename" --verbosity
+squire Map --read1 "$read1" --read2 "$read2" --map_folder $3/$basename --read_length $4 --fetch_folder $2 --pthreads 12  --name "$basename" --verbosity
 
 sleep 2
 echo "End of squire_star.sh ; job was conducted."

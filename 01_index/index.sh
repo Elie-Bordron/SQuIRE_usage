@@ -13,6 +13,6 @@ module load star/2.7.5a
 STAR --runThreadN 6 \
 --runMode genomeGenerate \
 --genomeDir 01_index/out/ \
---genomeFastaFiles /scratch/qtbui_TE/03_fetch/Marouch_genome.fasta \
---sjdbGTFfile /scratch/qtbui_TE/03_fetch/Marouch_refGene.gtf \
+--genomeFastaFiles /scratch/qtbui_TE/03_fetch/Marouch/Marouch_genome.fasta \
+--sjdbGTFfile /scratch/qtbui_TE/03_fetch/Marouch/Marouch.cleaned.gtf \
 --sjdbOverhang 99
